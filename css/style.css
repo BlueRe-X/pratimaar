@@ -37,7 +37,7 @@ body, html {
 }
 
 body > video {
-  position: fixed !important;
+  position: absolute !important;
   z-index: 0 !important;
   pointer-events: none;
 }
