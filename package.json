@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "echo 'PratimaAR siap dideploy ke Vercel!'"
+    "build": "node scripts/build.js"
   },
   "keywords": [
     "webar",
