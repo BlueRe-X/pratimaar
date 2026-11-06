@@ -1,4 +1,4 @@
-const MODEL_NAMES = ['gemini-3.8-flash'];
+const MODEL_NAMES = ['gemini-3.5-flash-lite'];
 const API_URL = modelName => `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
 function jsonResponse(status, body) {

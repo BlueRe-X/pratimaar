@@ -95,7 +95,7 @@ Jika ingin mengakses via IP lokal di ponsel Android:
 Jika dialog izin kamera tidak muncul, buka pengaturan situs dari ikon di sebelah alamat situs dan ubah **Kamera** menjadi **Izinkan**, lalu muat ulang halaman. Di Android, pastikan juga izin Kamera untuk aplikasi browser di Pengaturan Android aktif. Browser dalam aplikasi (misalnya browser dari aplikasi chat) dapat membatasi kamera; buka situs menggunakan Chrome.
 
 ### 3. Mengatur API Key Gemini
-Chatbot menggunakan **Gemini 3.8 Flash** (model ID `gemini-3.8-flash`). Model “Gemini 3.5 Flash” tidak tercantum pada dokumentasi resmi Google saat ini. API Key tunggal disimpan di server, bukan di browser atau repositori:
+Chatbot menggunakan **Gemini 3.5 Flash-Lite** (model ID `gemini-3.5-flash-lite`), model Flash berlatensi rendah dan berbiaya efisien yang tercantum di dokumentasi resmi Google. API Key tunggal disimpan di server, bukan di browser atau repositori:
 1. Tambahkan `GEMINI_API_KEY` sebagai environment variable di pengaturan proyek Vercel, lalu redeploy.
 2. Untuk pengembangan lokal, salin `.env.example` menjadi `.env` dan isi key Anda di file lokal tersebut.
 3. Gunakan **Uji Koneksi** pada menu Pengaturan untuk memeriksa koneksi chatbot.
