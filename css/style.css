@@ -36,6 +36,12 @@ body, html {
   user-select: none;
 }
 
+body > video {
+  position: fixed !important;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
 /* ==========================================================================
    AR SCENE & CANVAS
    ========================================================================== */

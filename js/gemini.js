@@ -5,7 +5,7 @@
  * Strategi Penghematan Token:
  * 1. System Prompt ultra-ringkas (~25-30 token)
  * 2. Injeksi konteks objek dinamis (hanya objek aktif yang dikirim, ~15-20 token)
- * 3. Batas output ketat (maxOutputTokens: 100)
+ * 3. Batas output untuk jawaban yang lebih lengkap (maxOutputTokens: 350)
  * 4. Sliding window percakapan (hanya 2 giliran percakapan terakhir yang dikirim ke API)
  * 5. Input user dipangkas maksimal 150 karakter
  * 6. Quick prompts pendek (2-4 kata)
@@ -47,15 +47,14 @@ class GeminiChatbot {
   }
 
   /**
-   * System Prompt hemat token:
-   * Sangat padat, menegaskan jawaban maksimal 2 kalimat tanpa pembuka/penutup klise.
+   * System prompt untuk jawaban yang informatif tanpa melebar dari topik.
    */
   getSystemInstruction() {
     let ctx = "Objek: Umum WebAR Pratima.";
     if (this.activeItem) {
       ctx = `${this.activeItem.aiContext}`;
     }
-    return `Asisten Pratima WebAR. Jawab singkat padat (maksimal 2 kalimat, to-the-point) tentang objek/bahasa Bali/fakta unik. Tanpa basa-basi. Konteks saat ini: ${ctx}`;
+    return `Asisten Pratima WebAR. Jawab dengan jelas dan cukup rinci dalam 4-6 kalimat tentang objek, bahasa Bali, budaya, atau fakta terkait. Berikan penjelasan dan contoh singkat bila membantu, jangan mengarang fakta, dan tetap fokus pada pertanyaan. Konteks saat ini: ${ctx}`;
   }
 
   /**

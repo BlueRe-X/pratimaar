@@ -23,15 +23,14 @@ Sesuai urutan folder `asset`, `target`, dan `doc`:
 
 Fitur chatbot dirancang dengan prinsip **efisiensi token maksimal pada sisi input dan output**:
 
-1. **System Instruction Ultra-Ringkas (~25-30 Token Input)**:
-   Instruksi sistem dipadatkan secara ekstrem tanpa basa-basi agar tidak membuang token awal:
-   > *"Asisten Pratima WebAR. Jawab singkat padat (maksimal 2 kalimat, to-the-point) tentang objek/bahasa Bali/fakta unik. Tanpa basa-basi."*
+1. **Instruksi Sistem Ringkas dan Informatif**:
+   Asisten menjawab dalam 4–6 kalimat yang relevan, dengan penjelasan atau contoh singkat bila membantu.
 
 2. **Injeksi Konteks Dinamis (~15-20 Token Input)**:
    Hanya objek yang **sedang aktif/terdeteksi di kamera** yang disisipkan ke dalam konteks percakapan. Aplikasi **tidak mengirimkan seluruh katalog objek sekaligus**.
 
-3. **Batas Keras Output Model (`maxOutputTokens: 100`)**:
-   Konfigurasi model membatasi jawaban maksimal 100 token (~50-80 kata padat). Model dilarang membuat pembukaan/penutup panjang, sehingga setiap respons sangat murah dan cepat.
+3. **Batas Output Model (`maxOutputTokens: 350`)**:
+   Batas ini memberi ruang untuk jawaban yang lebih jelas dan lengkap tanpa mendorong jawaban terlalu panjang.
 
 4. **Sliding Window Percakapan (Maksimal 2 Giliran)**:
    Hanya **2 pesan terakhir** yang dikirimkan kembali ke API Gemini. Riwayat lama tetap tampil di layar pengguna untuk dibaca, tetapi dipotong saat dikirim ke API untuk mencegah efek bola salju pembengkakan token (*token snowballing*).
@@ -96,7 +95,7 @@ Jika ingin mengakses via IP lokal di ponsel Android:
 Jika dialog izin kamera tidak muncul, buka pengaturan situs dari ikon di sebelah alamat situs dan ubah **Kamera** menjadi **Izinkan**, lalu muat ulang halaman. Di Android, pastikan juga izin Kamera untuk aplikasi browser di Pengaturan Android aktif. Browser dalam aplikasi (misalnya browser dari aplikasi chat) dapat membatasi kamera; buka situs menggunakan Chrome.
 
 ### 3. Mengatur API Key Gemini
-Chatbot menggunakan **Gemini 3.8 Flash**, dengan fallback otomatis ke Gemini 3.6 Flash jika model utama sedang padat. API Key tunggal disimpan di server, bukan di browser atau repositori:
+Chatbot menggunakan **Gemini 3.8 Flash** (model ID `gemini-3.8-flash`). Model “Gemini 3.5 Flash” tidak tercantum pada dokumentasi resmi Google saat ini. API Key tunggal disimpan di server, bukan di browser atau repositori:
 1. Tambahkan `GEMINI_API_KEY` sebagai environment variable di pengaturan proyek Vercel, lalu redeploy.
 2. Untuk pengembangan lokal, salin `.env.example` menjadi `.env` dan isi key Anda di file lokal tersebut.
 3. Gunakan **Uji Koneksi** pada menu Pengaturan untuk memeriksa koneksi chatbot.

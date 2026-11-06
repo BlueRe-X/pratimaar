@@ -1,4 +1,4 @@
-const MODEL_NAMES = ['gemini-3.8-flash', 'gemini-3.6-flash'];
+const MODEL_NAMES = ['gemini-3.8-flash'];
 const API_URL = modelName => `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
 function jsonResponse(status, body) {
@@ -85,14 +85,14 @@ async function processRequest(req) {
   const payload = {
     contents,
     generationConfig: {
-      maxOutputTokens: testMode ? 10 : 100
+      maxOutputTokens: testMode ? 10 : 350
     }
   };
 
   if (!testMode) {
     payload.systemInstruction = {
       parts: [{
-        text: `Asisten Pratima WebAR. Jawab singkat padat (maksimal 2 kalimat, to-the-point) tentang objek/bahasa Bali/fakta unik. Tanpa basa-basi. Konteks saat ini: ${body.context}`
+        text: `Asisten Pratima WebAR. Jawab dengan jelas dan cukup rinci dalam 4-6 kalimat tentang objek, bahasa Bali, budaya, atau fakta terkait. Berikan penjelasan dan contoh singkat bila membantu, jangan mengarang fakta, dan tetap fokus pada pertanyaan. Konteks saat ini: ${body.context}`
       }]
     };
   }
@@ -118,7 +118,7 @@ async function processRequest(req) {
         return jsonResponse(response.status, {
           error: {
             message: isTemporaryOverload
-              ? 'Gemini sedang padat. Kedua model sementara tidak tersedia; coba lagi sebentar.'
+              ? 'Gemini sedang padat; coba lagi sebentar.'
               : message
           }
         });
