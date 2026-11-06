@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PratimaAR - Web AR Edukasi & AI Gemini</title>
+  <meta name="description" content="Aplikasi WebAR responsif berbasis MindAR dengan integrasi AI Chatbot Gemini hemat token.">
+
+  <!-- A-Frame & MindAR CDNs -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+
+  <!-- Tailwind CSS CDN untuk utility styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. LOADING SCREEN
+       ======================================================================== -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="spinner"></div>
+    <h3 class="text-xl font-bold text-white mb-2">PratimaAR</h3>
+    <p class="text-sm text-cyan-400 mb-4 font-medium">Memuat Augmented Reality & 3D Assets...</p>
+    <div class="w-48 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+      <div id="loading-progress" class="bg-cyan-500 h-full w-2/3 animate-pulse"></div>
+    </div>
+    <span class="text-xs text-slate-500 mt-3">Mohon izinkan akses kamera pada perangkat Anda</span>
+    <button id="btn-skip-loading" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold rounded-lg border border-slate-700 transition">
+      Buka Mode Pratinjau 3D & Deskripsi ↗
+    </button>
+  </div>
+
+  <!-- ========================================================================
+       2. SCENE A-FRAME DENGAN MINDAR
+       ======================================================================== -->
+  <a-scene
+    mindar-image="imageTargetSrc: target/targets.mind; autoStart: true; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+    model-gesture-control>
+
+    <!-- Asset Manager dengan Cache -->
+    <a-assets timeout="60000">
+      <a-asset-item id="model-1" src="asset/1.glb"></a-asset-item>
+      <a-asset-item id="model-2" src="asset/2.glb"></a-asset-item>
+      <a-asset-item id="model-3" src="asset/3.glb"></a-asset-item>
+      <a-asset-item id="model-4" src="asset/4.glb"></a-asset-item>
+      <a-asset-item id="model-5" src="asset/5.glb"></a-asset-item>
+      <a-asset-item id="model-6" src="asset/6.glb"></a-asset-item>
+    </a-assets>
+
+    <!-- Kamera AR -->
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Pencahayaan Realistis -->
+    <a-light type="ambient" intensity="1.4"></a-light>
+    <a-light type="directional" position="1 3 2" intensity="1.6"></a-light>
+    <a-light type="directional" position="-1 -2 1" intensity="0.5"></a-light>
+
+    <!-- Target 0: 1. Kucing -->
+    <a-entity mindar-image-target="targetIndex: 0" id="target-entity-1">
+      <a-entity class="model-wrapper" rotation="90 0 0">
+        <a-gltf-model src="#model-1" auto-fit-model="targetSize: 0.7"></a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 1: 2. Burung -->
+    <a-entity mindar-image-target="targetIndex: 1" id="target-entity-2">
+      <a-entity class="model-wrapper" rotation="90 0 0">
+        <a-gltf-model src="#model-2" auto-fit-model="targetSize: 0.7"></a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 2: 3. Ikan -->
+    <a-entity mindar-image-target="targetIndex: 2" id="target-entity-3">
+      <a-entity class="model-wrapper" rotation="90 0 0">
+        <a-gltf-model src="#model-3" animation-mixer auto-fit-model="targetSize: 0.75"></a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 3: 4. Buku -->
+    <a-entity mindar-image-target="targetIndex: 3" id="target-entity-4">
+      <a-entity class="model-wrapper" rotation="90 0 0">
+        <a-gltf-model src="#model-4" auto-fit-model="targetSize: 0.65"></a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 4: 5. Meja -->
+    <a-entity mindar-image-target="targetIndex: 4" id="target-entity-5">
+      <a-entity class="model-wrapper" rotation="90 0 0">
+        <a-gltf-model src="#model-5" auto-fit-model="targetSize: 0.75"></a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 5: 6. Piring -->
+    <a-entity mindar-image-target="targetIndex: 5" id="target-entity-6">
+      <a-entity class="model-wrapper" rotation="90 0 0">
+        <a-gltf-model src="#model-6" auto-fit-model="targetSize: 0.7"></a-gltf-model>
+      </a-entity>
+    </a-entity>
+  </a-scene>
+
+  <!-- ========================================================================
+       3. RESPONSIVE UI OVERLAY
+       ======================================================================== -->
+  <div class="ui-overlay">
+
+    <!-- Top Header -->
+    <header class="ui-header">
+      <div class="brand">
+        <span class="brand-icon">✨</span>
+        <div>
+          <h1 class="brand-title">PratimaAR</h1>
+          <span class="brand-badge">WebAR + Gemini AI</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-open-gallery" class="header-btn" title="Katalog Target">
+          <span>📸</span>
+          <span>Target</span>
+        </button>
+        <button id="btn-open-chat" class="header-btn highlight" title="Tanya AI Asisten">
+          <span>🤖</span>
+          <span>AI Chat</span>
+        </button>
+        <button id="btn-open-settings" class="header-btn" title="Pengaturan & API Key">
+          <span>⚙️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Status Banner & Reticle -->
+    <div class="status-container">
+      <div id="status-indicator" class="status-indicator bg-amber-500/80 text-amber-200">
+        <span class="w-2 h-2 rounded-full bg-current animate-ping"></span>
+        <span id="status-text">Arahkan kamera ke target gambar...</span>
+      </div>
+    </div>
+
+    <!-- Scanner Reticle Animasi -->
+    <div id="scanner-reticle" class="scanner-reticle">
+      <div class="reticle-corner corner-tl"></div>
+      <div class="reticle-corner corner-tr"></div>
+      <div class="reticle-corner corner-bl"></div>
+      <div class="reticle-corner corner-br"></div>
+      <div class="laser-line"></div>
+    </div>
+
+    <!-- Kontrol Interaktif Model 3D -->
+    <div class="controls-3d">
+      <button id="ctrl-rot-left" class="ctrl-btn" title="Putar Kiri">↺</button>
+      <button id="ctrl-rot-right" class="ctrl-btn" title="Putar Kanan">↻</button>
+      <button id="ctrl-zoom-in" class="ctrl-btn" title="Perbesar">+</button>
+      <button id="ctrl-zoom-out" class="ctrl-btn" title="Perkecil">-</button>
+      <button id="ctrl-reset" class="ctrl-btn" title="Reset Posisi">⟲</button>
+    </div>
+
+    <!-- Floating Info Card (Bottom) -->
+    <div class="info-card-container">
+      <!-- Quick Selector Pills (1 s/d 6) -->
+      <div id="model-nav-pills" class="model-nav-pills">
+        <!-- Diisi dinamis oleh JS -->
+      </div>
+
+      <div id="info-card" class="info-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span id="card-icon" class="card-icon">🐱</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 id="card-title" class="card-title">1. Kucing (Méong)</h2>
+                <div class="model-nav-arrows">
+                  <button id="btn-prev-model" class="nav-arrow-btn" title="Model Sebelumnya">◀</button>
+                  <span id="model-counter-badge" class="counter-badge">1/6</span>
+                  <button id="btn-next-model" class="nav-arrow-btn" title="Model Berikutnya">▶</button>
+                </div>
+              </div>
+              <p id="card-sub" class="card-sub">Felis catus · Cat</p>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button id="btn-tts" class="action-pill-btn" title="Dengarkan pengucapan audio">
+              <span>🔊</span>
+              <span>Audio</span>
+            </button>
+            <button id="btn-ask-ai" class="action-pill-btn ai-btn" title="Tanya AI tentang objek ini">
+              <span>💬</span>
+              <span>Tanya AI</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Language Switcher Tabs -->
+        <div class="lang-tabs">
+          <button class="lang-tab active" data-lang="id">🇮🇩 Bahasa Indonesia</button>
+          <button class="lang-tab" data-lang="en">🇬🇧 English</button>
+          <button class="lang-tab" data-lang="bali">🌺 Basa Bali</button>
+        </div>
+
+        <!-- Description Content -->
+        <p id="card-desc" class="card-desc">
+          Kucing adalah hewan mamalia karnivora kecil berkaki empat yang sering dipelihara sebagai teman manusia.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. GEMINI AI CHAT DRAWER (TOKEN-OPTIMIZED)
+       ======================================================================== -->
+  <div id="chat-drawer" class="chat-drawer translate-y-full pointer-events-none">
+    <!-- Header Chatbot -->
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <span class="text-xl">🤖</span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="chat-title">Pratima AI</h3>
+            <span id="token-stats-badge" class="token-badge" title="Mode hemat token aktif">⚡ Hemat Token</span>
+          </div>
+          <span class="text-[10px] text-slate-400">Powered by Google Gemini 1.5 Flash</span>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button id="btn-clear-chat" class="icon-btn" title="Bersihkan riwayat percakapan">🗑️</button>
+        <button id="btn-close-chat" class="icon-btn" title="Tutup Chat">✕</button>
+      </div>
+    </div>
+
+    <!-- Active Object Context Bar -->
+    <div class="chat-context-banner">
+      <span>Konteks AR: <strong id="chat-active-object">🐱 Kucing (Méong)</strong></span>
+      <span class="text-[10px] opacity-75">Hemat: Input ~40t / Output ~40t</span>
+    </div>
+
+    <!-- Quick Prompt Chips (Hemat Token) -->
+    <div id="quick-chips" class="quick-chips-wrapper">
+      <!-- Diisi dinamis sesuai objek aktif -->
+    </div>
+
+    <!-- Messages Container -->
+    <div id="chat-messages" class="chat-messages">
+      <!-- Pesan-pesan akan muncul di sini -->
+    </div>
+
+    <!-- Chat Input Bar -->
+    <div class="chat-input-bar">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          id="chat-input"
+          class="chat-input"
+          placeholder="Tanya ringkas tentang objek ini..."
+          maxlength="150"
+          autocomplete="off">
+        <span id="chat-char-count" class="char-counter">0/150</span>
+      </div>
+      <button id="btn-send-chat" class="send-btn" title="Kirim">
+        ➤
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       5. TARGET GALLERY MODAL
+       ======================================================================== -->
+  <div id="gallery-modal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">📸 Katalog Target Gambar (1 - 6)</h3>
+        <button id="btn-close-gallery" class="icon-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-xs text-slate-300 mb-3">
+          Arahkan kamera ke salah satu gambar target di bawah atau klik <strong>"Lihat Target"</strong> untuk menampilkan gambar di layar lain / dicetak:
+        </p>
+        <div id="gallery-grid" class="gallery-grid">
+          <!-- Di-render oleh JavaScript dari ITEMS_DATA -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       6. FULL TARGET IMAGE VIEWER MODAL
+       ======================================================================== -->
+  <div id="image-modal" class="modal-backdrop hidden">
+    <div class="modal-content max-w-md">
+      <div class="modal-header">
+        <h3 id="modal-target-title" class="modal-title text-sm">Target Gambar</h3>
+        <button id="btn-close-image-modal" class="icon-btn">✕</button>
+      </div>
+      <div class="modal-body flex flex-col items-center">
+        <div class="bg-black/40 p-2 rounded-xl border border-slate-700/60 mb-3 w-full flex justify-center">
+          <img id="modal-target-img" src="" alt="Target MindAR" class="max-h-64 object-contain rounded-lg">
+        </div>
+
+        <!-- Box Deskripsi Terintegrasi -->
+        <div class="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl p-3 mb-3 text-xs space-y-2">
+          <div>
+            <span class="text-cyan-400 font-bold block mb-0.5">🇮🇩 Bahasa Indonesia:</span>
+            <p id="modal-desc-id" class="text-slate-200 leading-relaxed"></p>
+          </div>
+          <div>
+            <span class="text-amber-400 font-bold block mb-0.5">🇬🇧 English:</span>
+            <p id="modal-desc-en" class="text-slate-300 leading-relaxed"></p>
+          </div>
+          <div>
+            <span class="text-emerald-400 font-bold block mb-0.5">🌺 Basa Bali:</span>
+            <p id="modal-desc-bali" class="text-slate-200 leading-relaxed"></p>
+          </div>
+        </div>
+
+        <div class="flex gap-2 w-full">
+          <a id="btn-download-target" href="#" download="target.jpg" class="flex-1 text-center py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold border border-slate-600 transition">
+            📥 Unduh Target
+          </a>
+          <button id="btn-modal-select-item" class="flex-1 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition">
+            👁️ Tampilkan Objek Ini
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       7. SETTINGS & GEMINI API KEY MODAL
+       ======================================================================== -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-content max-w-md">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ Pengaturan Gemini AI</h3>
+        <button id="btn-close-settings" class="icon-btn">✕</button>
+      </div>
+      <div class="modal-body space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-200 mb-1">
+            Google Gemini API Key:
+          </label>
+          <input
+            type="password"
+            id="api-key-input"
+            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+            placeholder="AIzaSy...">
+          <p class="text-[11px] text-slate-400 mt-1">
+            API Key disimpan aman hanya pada penyimpanan lokal (localStorage) browser Anda.
+          </p>
+        </div>
+
+        <div class="p-3 bg-cyan-950/40 border border-cyan-500/20 rounded-xl text-xs space-y-1.5 text-cyan-200">
+          <div class="font-bold flex items-center gap-1.5 text-cyan-300">
+            <span>⚡</span>
+            <span>Fitur Penghematan Token Aktif:</span>
+          </div>
+          <ul class="list-disc list-inside text-[11px] space-y-0.5 text-slate-300">
+            <li><strong>Input Capped:</strong> Maksimal 150 karakter per pertanyaan.</li>
+            <li><strong>Output Capped:</strong> Dibatasi keras 100 token (~50-80 kata padat).</li>
+            <li><strong>Sliding Window:</strong> Hanya 2 giliran riwayat percakapan yang dikirim.</li>
+            <li><strong>Target Context Injection:</strong> Hanya deskripsi objek aktif yang dikirim.</li>
+          </ul>
+        </div>
+
+        <div class="text-[11px] text-slate-400">
+          Belum punya API Key? Dapatkan secara gratis di 
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-cyan-400 underline font-semibold">
+            Google AI Studio ↗
+          </a>
+        </div>
+
+        <div id="api-key-status" class="text-xs font-medium"></div>
+
+        <div class="flex gap-2 pt-2">
+          <button id="btn-test-api-key" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-600">
+            Uji Koneksi
+          </button>
+          <button id="btn-save-api-key" class="flex-1 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-lg">
+            Simpan API Key
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts Aplikasi -->
+  <script src="js/models-data.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

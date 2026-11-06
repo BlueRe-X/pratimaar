@@ -1,0 +1,21 @@
+{
+  "name": "pratima-webar",
+  "version": "1.0.0",
+  "description": "Aplikasi WebAR Responsif berbasis MindAR dengan AI Chatbot Gemini Hemat Token",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'PratimaAR siap dideploy ke Vercel!'"
+  },
+  "keywords": [
+    "webar",
+    "mindar",
+    "aframe",
+    "threejs",
+    "gemini",
+    "ai-chatbot"
+  ],
+  "author": "",
+  "license": "MIT"
+}

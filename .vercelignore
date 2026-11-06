@@ -1,0 +1,8 @@
+# File & direktori yang diabaikan saat deployment ke Vercel
+.git
+.env
+.env.example
+.env.*
+node_modules
+doc/
+*.log
