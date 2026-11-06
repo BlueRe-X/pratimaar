@@ -66,6 +66,8 @@ Fitur chatbot dirancang dengan prinsip **efisiensi token maksimal pada sisi inpu
 
 ## 🚀 Cara Menjalankan Aplikasi
 
+MindAR dimuat secara dinamis setelah halaman siap. Model GLB, target MindAR (`targets.mind`), dan gambar target dimuat dari repositori GitHub melalui jsDelivr. URL aset dipatok ke commit agar target dan model yang dipakai tetap konsisten. Karena paket repositori melampaui batas jsDelivr 50 MB, model Burung (`asset/2.glb`) yang berukuran besar menggunakan GitHub Raw; file lain tetap melalui jsDelivr.
+
 ### 1. Menjalankan Server Lokal (Node.js)
 Pastikan Node.js telah terpasang, lalu buka terminal di folder proyek ini dan jalankan:
 

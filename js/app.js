@@ -3,7 +3,7 @@
  * Mengatur lifecycle MindAR, interaksi model 3D, UI responsif, TTS, dan Chatbot Gemini
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // State aplikasi
   const state = {
     activeItem: null,
@@ -254,7 +254,41 @@ document.addEventListener('DOMContentLoaded', () => {
      3. MINDAR LIFECYCLE & EVENT TRACKING
      ========================================================================== */
 
-  const sceneEl = document.querySelector('a-scene');
+  let sceneEl = null;
+  try {
+    await import('https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js');
+
+    const sceneTemplate = document.getElementById('ar-scene-template');
+    if (!sceneTemplate?.content.firstElementChild) {
+      throw new Error('Template scene AR tidak ditemukan.');
+    }
+
+    sceneEl = sceneTemplate.content.firstElementChild.cloneNode(true);
+    document.body.insertBefore(sceneEl, document.querySelector('.ui-overlay'));
+    await new Promise((resolve, reject) => {
+      const deadline = performance.now() + 15000;
+      const checkMindARReady = () => {
+        if (sceneEl.systems['mindar-image-system']) {
+          resolve();
+        } else if (performance.now() >= deadline) {
+          reject(new Error('Komponen MindAR tidak siap.'));
+        } else {
+          requestAnimationFrame(checkMindARReady);
+        }
+      };
+      checkMindARReady();
+    });
+
+    dom.loadingHint.textContent = 'Modul AR siap. Tekan tombol, lalu pilih Izinkan saat browser meminta akses kamera.';
+    dom.btnSkipLoading.disabled = false;
+  } catch (error) {
+    console.error('Modul MindAR gagal dimuat:', error);
+    dom.loadingHint.textContent = 'Gagal memuat modul AR. Periksa koneksi internet, lalu muat ulang halaman.';
+    dom.btnSkipLoading.textContent = 'Muat Ulang Halaman';
+    dom.btnSkipLoading.disabled = false;
+    dom.btnSkipLoading.addEventListener('click', () => window.location.reload(), { once: true });
+  }
+
   let cameraStartPending = false;
   let cameraStartTimedOut = false;
   let cameraStartTimeout;
@@ -267,6 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   dom.btnSkipLoading?.addEventListener('click', () => {
+    if (!sceneEl) return;
+
     if (cameraStartTimedOut) {
       window.location.reload();
       return;
@@ -274,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (cameraStartPending) return;
 
-    const arSystem = sceneEl.systems['mindar-image-system'];
+    const arSystem = sceneEl?.systems['mindar-image-system'];
     if (!arSystem) {
       dom.loadingHint.textContent = 'Sistem AR belum siap. Muat ulang halaman dan coba lagi.';
       return;
@@ -319,14 +355,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 15000);
   });
 
-  sceneEl.addEventListener('arReady', () => {
+  sceneEl?.addEventListener('arReady', () => {
     console.log("MindAR Siap");
     clearTimeout(cameraStartTimeout);
     cameraStartPending = false;
     dismissLoading();
   });
 
-  sceneEl.addEventListener('arError', (event) => {
+  sceneEl?.addEventListener('arError', (event) => {
     const error = event.detail?.error || 'Kesalahan kamera atau AR';
     console.error("MindAR Gagal Dimulai:", error);
     clearTimeout(cameraStartTimeout);

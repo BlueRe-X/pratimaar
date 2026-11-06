@@ -9,6 +9,10 @@
  * 6. Piring
  */
 
+const ASSET_BASE_URL = "https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e";
+const assetUrl = path => `${ASSET_BASE_URL}/${path}`;
+const LARGE_MODEL_URL = "https://raw.githubusercontent.com/BlueRe-X/pratimaar/967363e8b4f2430a8687a585c15a2b415688a4fe/asset/2.glb";
+
 const ITEMS_DATA = [
   {
     id: 1,
@@ -17,8 +21,8 @@ const ITEMS_DATA = [
     latinName: "Liber",
     balineseName: "Cakepan",
     englishName: "Book",
-    modelSrc: "asset/1.glb",
-    imageSrc: "img/1.jpg",
+    modelSrc: assetUrl("asset/1.glb"),
+    imageSrc: assetUrl("img/1.jpg"),
     icon: "📖",
     // Penyesuaian visual 3D (scale, rotation, offset)
     modelConfig: {
@@ -46,8 +50,8 @@ const ITEMS_DATA = [
     latinName: "Aves",
     balineseName: "Kedis",
     englishName: "Bird",
-    modelSrc: "asset/2.glb",
-    imageSrc: "img/2.jpg",
+    modelSrc: LARGE_MODEL_URL,
+    imageSrc: assetUrl("img/2.jpg"),
     icon: "🦅",
     modelConfig: {
       scale: "0.25 0.25 0.25",
@@ -73,8 +77,8 @@ const ITEMS_DATA = [
     latinName: "Pisces",
     balineseName: "Bé / Jukut",
     englishName: "Fish",
-    modelSrc: "asset/3.glb",
-    imageSrc: "img/3.jpg",
+    modelSrc: assetUrl("asset/3.glb"),
+    imageSrc: assetUrl("img/3.jpg"),
     icon: "🐟",
     hasAnimation: true,
     modelConfig: {
@@ -101,8 +105,8 @@ const ITEMS_DATA = [
     latinName: "Felis catus",
     balineseName: "Méong",
     englishName: "Cat",
-    modelSrc: "asset/4.glb",
-    imageSrc: "img/4.jpg",
+    modelSrc: assetUrl("asset/4.glb"),
+    imageSrc: assetUrl("img/4.jpg"),
     icon: "🐱",
     modelConfig: {
       scale: "0.35 0.35 0.35",
@@ -128,8 +132,8 @@ const ITEMS_DATA = [
     latinName: "Mensa",
     balineseName: "Méja",
     englishName: "Table",
-    modelSrc: "asset/5.glb",
-    imageSrc: "img/5.jpg",
+    modelSrc: assetUrl("asset/5.glb"),
+    imageSrc: assetUrl("img/5.jpg"),
     icon: "🪑",
     modelConfig: {
       scale: "0.18 0.18 0.18",
@@ -155,8 +159,8 @@ const ITEMS_DATA = [
     latinName: "Discus",
     balineseName: "Piring / Pinggan",
     englishName: "Plate",
-    modelSrc: "asset/6.glb",
-    imageSrc: "img/6.jpg",
+    modelSrc: assetUrl("asset/6.glb"),
+    imageSrc: assetUrl("img/6.jpg"),
     icon: "🍽️",
     modelConfig: {
       scale: "0.8 0.8 0.8",

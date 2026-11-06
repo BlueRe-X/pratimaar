@@ -6,16 +6,15 @@
   <title>PratimaAR - Web AR Edukasi & AI Gemini</title>
   <meta name="description" content="Aplikasi WebAR responsif berbasis MindAR dengan integrasi AI Chatbot Gemini hemat token.">
 
-  <!-- A-Frame & MindAR CDNs -->
+  <!-- A-Frame runtime; MindAR is dynamically imported by the application. -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
 
   <!-- Tailwind CSS CDN untuk utility styling -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=camera-display-answer-fix-1">
+  <link rel="stylesheet" href="css/style.css?v=dynamic-ar-assets-1">
 </head>
 <body>
 
@@ -29,8 +28,8 @@
     <div class="w-48 bg-slate-800 h-1.5 rounded-full overflow-hidden">
       <div id="loading-progress" class="bg-cyan-500 h-full w-2/3 animate-pulse"></div>
     </div>
-    <span id="loading-hint" class="text-xs text-slate-400 mt-3 text-center max-w-xs px-4">Tekan tombol, lalu pilih Izinkan saat browser meminta akses kamera.</span>
-    <button id="btn-skip-loading" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold rounded-lg border border-slate-700 transition">
+    <span id="loading-hint" class="text-xs text-slate-400 mt-3 text-center max-w-xs px-4">Memuat modul AR. Mohon tunggu sebentar...</span>
+    <button id="btn-skip-loading" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold rounded-lg border border-slate-700 transition" disabled>
       Aktifkan Kamera & Mulai AR ↗
     </button>
   </div>
@@ -38,8 +37,9 @@
   <!-- ========================================================================
        2. SCENE A-FRAME DENGAN MINDAR
        ======================================================================== -->
+  <template id="ar-scene-template">
   <a-scene
-    mindar-image="imageTargetSrc: target/targets.mind; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
+    mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/target/targets.mind; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
     color-space="sRGB"
     renderer="alpha: true, colorManagement: true, physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
@@ -48,12 +48,12 @@
 
     <!-- Asset Manager dengan Cache -->
     <a-assets timeout="10000">
-      <a-asset-item id="model-1" src="asset/1.glb"></a-asset-item>
-      <a-asset-item id="model-2" src="asset/2.glb"></a-asset-item>
-      <a-asset-item id="model-3" src="asset/3.glb"></a-asset-item>
-      <a-asset-item id="model-4" src="asset/4.glb"></a-asset-item>
-      <a-asset-item id="model-5" src="asset/5.glb"></a-asset-item>
-      <a-asset-item id="model-6" src="asset/6.glb"></a-asset-item>
+      <a-asset-item id="model-1" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/1.glb"></a-asset-item>
+      <a-asset-item id="model-2" src="https://raw.githubusercontent.com/BlueRe-X/pratimaar/967363e8b4f2430a8687a585c15a2b415688a4fe/asset/2.glb"></a-asset-item>
+      <a-asset-item id="model-3" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/3.glb"></a-asset-item>
+      <a-asset-item id="model-4" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/4.glb"></a-asset-item>
+      <a-asset-item id="model-5" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/5.glb"></a-asset-item>
+      <a-asset-item id="model-6" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/6.glb"></a-asset-item>
     </a-assets>
 
     <!-- Kamera AR -->
@@ -106,6 +106,7 @@
       </a-entity>
     </a-entity>
   </a-scene>
+  </template>
 
   <!-- ========================================================================
        3. RESPONSIVE UI OVERLAY
@@ -350,8 +351,8 @@
   </div>
 
   <!-- Scripts Aplikasi -->
-  <script src="js/models-data.js?v=camera-display-answer-fix-1"></script>
+  <script src="js/models-data.js?v=dynamic-ar-assets-1"></script>
   <script src="js/gemini.js"></script>
-  <script src="js/app.js?v=camera-display-answer-fix-1"></script>
+  <script src="js/app.js?v=dynamic-ar-assets-1"></script>
 </body>
 </html>
