@@ -1,10 +1,10 @@
 /**
  * PratimaAR - Data Model & Target 3D
  * Urutan 1 s/d 6 sesuai urutan aset dan target:
- * 1. Kucing
+ * 1. Buku
  * 2. Burung
  * 3. Ikan
- * 4. Buku
+ * 4. Kucing
  * 5. Meja
  * 6. Piring
  */
@@ -13,30 +13,30 @@ const ITEMS_DATA = [
   {
     id: 1,
     targetIndex: 0,
-    name: "Kucing",
-    latinName: "Felis catus",
-    balineseName: "Méong",
-    englishName: "Cat",
-    modelSrc: "asset/1.glb",
+    name: "Buku",
+    latinName: "Liber",
+    balineseName: "Cakepan",
+    englishName: "Book",
+    modelSrc: "asset/4.glb",
     imageSrc: "img/1.jpg",
-    icon: "🐱",
+    icon: "📖",
     // Penyesuaian visual 3D (scale, rotation, offset)
     modelConfig: {
-      scale: "0.35 0.35 0.35",
+      scale: "1.1 1.1 1.1",
       rotation: "90 0 0",
       position: "0 0 0"
     },
     descriptions: {
-      id: "Kucing adalah hewan mamalia karnivora kecil berkaki empat yang sering dipelihara sebagai teman manusia.",
-      en: "A cat is a small, four-legged carnivorous mammal often kept as a domestic pet.",
-      bali: "Méong inggih punika buron mamalia alit sane madué batis patpat tur ketah kaubuh dados timpal manusa."
+      id: "Buku adalah lembaran kertas berjilid yang berisi tulisan atau gambar untuk dibaca dan dipelajari.",
+      en: "A book is a bound set of printed or blank sheets of paper used for reading and learning.",
+      bali: "Cakepan inggih punika pupulan keretas matulis utawi magambar sané kajilid anggén wacénan miwah papelajahan."
     },
     // Konteks super ringkas untuk prompt Gemini (Hemat Token!)
-    aiContext: "Objek: Kucing (Méong/Cat). Mamalia karnivora berkaki empat peliharaan manusia.",
+    aiContext: "Objek: Buku (Cakepan/Book). Lembaran berjilid tempat ilmu & tulisan, tradisi lontar Bali.",
     quickPrompts: [
-      "Fakta unik kucing?",
-      "Kenapa disebut Méong?",
-      "Perilaku khas kucing?"
+      "Apa filosofi Cakepan di Bali?",
+      "Sejarah buku pertama?",
+      "Manfaat rajin membaca?"
     ]
   },
   {
@@ -97,28 +97,28 @@ const ITEMS_DATA = [
   {
     id: 4,
     targetIndex: 3,
-    name: "Buku",
-    latinName: "Liber",
-    balineseName: "Cakepan",
-    englishName: "Book",
-    modelSrc: "asset/4.glb",
+    name: "Kucing",
+    latinName: "Felis catus",
+    balineseName: "Méong",
+    englishName: "Cat",
+    modelSrc: "asset/1.glb",
     imageSrc: "img/4.jpg",
-    icon: "📖",
+    icon: "🐱",
     modelConfig: {
-      scale: "1.1 1.1 1.1",
+      scale: "0.35 0.35 0.35",
       rotation: "90 0 0",
       position: "0 0 0"
     },
     descriptions: {
-      id: "Buku adalah lembaran kertas berjilid yang berisi tulisan atau gambar untuk dibaca dan dipelajari.",
-      en: "A book is a bound set of printed or blank sheets of paper used for reading and learning.",
-      bali: "Cakepan inggih punika pupulan keretas matulis utawi magambar sané kajilid anggén wacénan miwah papelajahan."
+      id: "Kucing adalah hewan mamalia karnivora kecil berkaki empat yang sering dipelihara sebagai teman manusia.",
+      en: "A cat is a small, four-legged carnivorous mammal often kept as a domestic pet.",
+      bali: "Méong inggih punika buron mamalia alit sane madué batis patpat tur ketah kaubuh dados timpal manusa."
     },
-    aiContext: "Objek: Buku (Cakepan/Book). Lembaran berjilid tempat ilmu & tulisan, tradisi lontar Bali.",
+    aiContext: "Objek: Kucing (Méong/Cat). Mamalia karnivora berkaki empat peliharaan manusia.",
     quickPrompts: [
-      "Apa filosofi Cakepan di Bali?",
-      "Sejarah buku pertama?",
-      "Manfaat rajin membaca?"
+      "Fakta unik kucing?",
+      "Kenapa disebut Méong?",
+      "Perilaku khas kucing?"
     ]
   },
   {

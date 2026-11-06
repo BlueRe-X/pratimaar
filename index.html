@@ -41,7 +41,7 @@
   <a-scene
     mindar-image="imageTargetSrc: target/targets.mind; autoStart: true; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights: true"
+    renderer="alpha: true, colorManagement: true, physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
     model-gesture-control>
@@ -64,10 +64,10 @@
     <a-light type="directional" position="1 3 2" intensity="1.6"></a-light>
     <a-light type="directional" position="-1 -2 1" intensity="0.5"></a-light>
 
-    <!-- Target 0: 1. Kucing -->
+    <!-- Target 0: 1. Buku -->
     <a-entity mindar-image-target="targetIndex: 0" id="target-entity-1">
       <a-entity class="model-wrapper" rotation="90 0 0">
-        <a-gltf-model src="#model-1" auto-fit-model="targetSize: 0.7"></a-gltf-model>
+        <a-gltf-model src="#model-4" auto-fit-model="targetSize: 0.65"></a-gltf-model>
       </a-entity>
     </a-entity>
 
@@ -85,10 +85,10 @@
       </a-entity>
     </a-entity>
 
-    <!-- Target 3: 4. Buku -->
+    <!-- Target 3: 4. Kucing -->
     <a-entity mindar-image-target="targetIndex: 3" id="target-entity-4">
       <a-entity class="model-wrapper" rotation="90 0 0">
-        <a-gltf-model src="#model-4" auto-fit-model="targetSize: 0.65"></a-gltf-model>
+        <a-gltf-model src="#model-1" auto-fit-model="targetSize: 0.7"></a-gltf-model>
       </a-entity>
     </a-entity>
 
@@ -130,7 +130,7 @@
           <span>🤖</span>
           <span>AI Chat</span>
         </button>
-        <button id="btn-open-settings" class="header-btn" title="Pengaturan & API Key">
+        <button id="btn-open-settings" class="header-btn" title="Pengaturan AI">
           <span>⚙️</span>
         </button>
       </div>
@@ -175,7 +175,7 @@
             <span id="card-icon" class="card-icon">🐱</span>
             <div>
               <div class="flex items-center gap-2">
-                <h2 id="card-title" class="card-title">1. Kucing (Méong)</h2>
+                <h2 id="card-title" class="card-title">1. Buku (Cakepan)</h2>
                 <div class="model-nav-arrows">
                   <button id="btn-prev-model" class="nav-arrow-btn" title="Model Sebelumnya">◀</button>
                   <span id="model-counter-badge" class="counter-badge">1/6</span>
@@ -236,7 +236,7 @@
 
     <!-- Active Object Context Bar -->
     <div class="chat-context-banner">
-      <span>Konteks AR: <strong id="chat-active-object">🐱 Kucing (Méong)</strong></span>
+      <span>Konteks AR: <strong id="chat-active-object">📖 Buku (Cakepan)</strong></span>
       <span class="text-[10px] opacity-75">Hemat: Input ~40t / Output ~40t</span>
     </div>
 
@@ -341,16 +341,8 @@
       </div>
       <div class="modal-body space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-200 mb-1">
-            Google Gemini API Key:
-          </label>
-          <input
-            type="password"
-            id="api-key-input"
-            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
-            placeholder="AIzaSy...">
-          <p class="text-[11px] text-slate-400 mt-1">
-            API Key disimpan aman hanya pada penyimpanan lokal (localStorage) browser Anda.
+          <p class="text-xs text-slate-300">
+            Chatbot menggunakan satu API Key yang disimpan di server. Key tidak dikirim atau disimpan di browser.
           </p>
         </div>
 
@@ -367,21 +359,11 @@
           </ul>
         </div>
 
-        <div class="text-[11px] text-slate-400">
-          Belum punya API Key? Dapatkan secara gratis di 
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-cyan-400 underline font-semibold">
-            Google AI Studio ↗
-          </a>
-        </div>
-
         <div id="api-key-status" class="text-xs font-medium"></div>
 
         <div class="flex gap-2 pt-2">
           <button id="btn-test-api-key" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-600">
-            Uji Koneksi
-          </button>
-          <button id="btn-save-api-key" class="flex-1 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-lg">
-            Simpan API Key
+            Uji Koneksi Server
           </button>
         </div>
       </div>

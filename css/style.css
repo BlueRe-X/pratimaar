@@ -46,11 +46,14 @@ a-scene {
   top: 0;
   left: 0;
   z-index: 1;
+  background: transparent !important;
 }
 
-/* Sembunyikan default MindAR UI agar kita gunakan UI kustom yang jauh lebih cantik */
-.mindar-ui-overlay {
-  display: none !important;
+body > video {
+  position: absolute;
+  inset: 0;
+  z-index: 0 !important;
+  object-fit: cover;
 }
 
 /* ==========================================================================

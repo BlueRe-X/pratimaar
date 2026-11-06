@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
+const { processRequest: processGeminiRequest } = require('./api/gemini');
 
 // Fungsi pembaca .env mandiri (Zero-dependency)
 function loadEnv() {
@@ -81,7 +82,7 @@ function getLocalIpAddresses() {
 function handleRequest(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*');
 
   if (req.method === 'OPTIONS') {
@@ -92,6 +93,51 @@ function handleRequest(req, res) {
 
   // Parse path & sanitize
   let cleanUrl = req.url.split('?')[0];
+
+  if (cleanUrl === '/api/gemini') {
+    if (req.method !== 'POST') {
+      processGeminiRequest({ method: req.method, headers: req.headers, body: null }).then(result => {
+        res.writeHead(result.status, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(result.body));
+      });
+      return;
+    }
+
+    let rawBody = '';
+    let bodyTooLarge = false;
+    req.on('data', chunk => {
+      if (bodyTooLarge) return;
+      rawBody += chunk;
+      if (rawBody.length > 16384) {
+        bodyTooLarge = true;
+        rawBody = '';
+      }
+    });
+    req.on('end', async () => {
+      if (bodyTooLarge) {
+        res.writeHead(413, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: { message: 'Permintaan terlalu besar.' } }));
+        return;
+      }
+
+      let body;
+      try {
+        body = JSON.parse(rawBody);
+      } catch {
+        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: { message: 'Format permintaan tidak valid.' } }));
+        return;
+      }
+
+      const result = await processGeminiRequest({ method: req.method, headers: req.headers, body });
+      res.writeHead(result.status, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store'
+      });
+      res.end(JSON.stringify(result.body));
+    });
+    return;
+  }
 
   if (cleanUrl === '/' || cleanUrl === '') {
     cleanUrl = '/index.html';

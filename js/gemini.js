@@ -14,10 +14,11 @@
 
 class GeminiChatbot {
   constructor() {
-    this.storageKey = 'pratima_gemini_api_key';
-    this.apiKey = localStorage.getItem(this.storageKey) || '';
-    this.modelName = 'gemini-1.5-flash'; // Model paling hemat, cepat, dan handal
-    this.apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent`;
+    try {
+      localStorage.removeItem('pratima_gemini_api_key');
+    } catch (error) {
+      console.warn("API Key lama tidak dapat dihapus dari penyimpanan browser.", error);
+    }
 
     // Riwayat percakapan lokal (untuk tampilan)
     this.conversationHistory = [];
@@ -35,23 +36,6 @@ class GeminiChatbot {
 
     // Callback untuk update UI token
     this.onTokenUpdate = null;
-  }
-
-  setApiKey(key) {
-    this.apiKey = key.trim();
-    if (this.apiKey) {
-      localStorage.setItem(this.storageKey, this.apiKey);
-    } else {
-      localStorage.removeItem(this.storageKey);
-    }
-  }
-
-  getApiKey() {
-    return this.apiKey;
-  }
-
-  hasApiKey() {
-    return Boolean(this.apiKey && this.apiKey.length > 10);
   }
 
   setActiveItem(item) {
@@ -78,10 +62,6 @@ class GeminiChatbot {
    * Mengirim pesan ke Gemini API dengan efisiensi token maksimal
    */
   async sendMessage(rawUserMessage) {
-    if (!this.hasApiKey()) {
-      throw new Error("API Key Gemini belum diatur. Silakan masukkan API Key di menu pengaturan.");
-    }
-
     // 1. Pangkas input teks (Token Saving Strategy #1)
     const userMessage = rawUserMessage.trim().substring(0, 150);
     if (!userMessage) {
@@ -104,21 +84,14 @@ class GeminiChatbot {
       parts: [{ text: msg.text }]
     }));
 
-    // 3. Payload Request dengan generationConfig hemat token
+    // API key and generation settings stay on the server.
     const payload = {
-      systemInstruction: {
-        parts: [{ text: this.getSystemInstruction() }]
-      },
-      contents: contents,
-      generationConfig: {
-        maxOutputTokens: 100, // Token Saving Strategy #3: Output dibatasi keras ~60-80 kata
-        temperature: 0.4,     // Akurat, tidak bertele-tele
-        topP: 0.8
-      }
+      context: this.activeItem?.aiContext || "Objek: Umum WebAR Pratima.",
+      contents
     };
 
     try {
-      const response = await fetch(`${this.apiUrl}?key=${this.apiKey}`, {
+      const response = await fetch('/api/gemini', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -133,10 +106,10 @@ class GeminiChatbot {
       }
 
       const data = await response.json();
-
-      // Ambil respon model
-      const candidate = data.candidates?.[0];
-      const modelText = candidate?.content?.parts?.[0]?.text || "(Tidak ada respon)";
+      const modelText = data.reply;
+      if (!modelText) {
+        throw new Error("Gemini tidak mengembalikan jawaban.");
+      }
 
       // 4. Catat token penggunaan dari usageMetadata Gemini
       const usage = data.usageMetadata || {};
@@ -177,21 +150,13 @@ class GeminiChatbot {
   }
 
   /**
-   * Tes koneksi cepat API Key dengan biaya 5 token
+   * Tes koneksi cepat ke endpoint Gemini yang dikelola server
    */
-  async testApiKey(key) {
-    const testKey = (key || this.apiKey).trim();
-    if (!testKey) throw new Error("API Key kosong");
-
-    const payload = {
-      contents: [{ role: 'user', parts: [{ text: "Halo" }] }],
-      generationConfig: { maxOutputTokens: 10 }
-    };
-
-    const res = await fetch(`${this.apiUrl}?key=${testKey}`, {
+  async testApiKey() {
+    const res = await fetch('/api/gemini', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ action: 'test' })
     });
 
     if (!res.ok) {

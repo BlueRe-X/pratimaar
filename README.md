@@ -10,10 +10,10 @@ Sesuai urutan folder `asset`, `target`, dan `doc`:
 
 | No | Objek (Indonesia) | Basa Bali | English | Model 3D (`asset/`) | Gambar Target (`img/`) | Indeks Target MindAR |
 |:--:|:------------------|:----------|:--------|:-------------------:|:---------------------:|:--------------------:|
-| **1** | **Kucing** | Méong | Cat | `1.glb` | `1.jpg` | `0` |
+| **1** | **Buku** | Cakepan | Book | `4.glb` | `1.jpg` | `0` |
 | **2** | **Burung** | Kedis | Bird | `2.glb` | `2.jpg` | `1` |
 | **3** | **Ikan** | Bé / Jukut | Fish | `3.glb` (Animasi) | `3.jpg` | `2` |
-| **4** | **Buku** | Cakepan | Book | `4.glb` | `4.jpg` | `3` |
+| **4** | **Kucing** | Méong | Cat | `1.glb` | `4.jpg` | `3` |
 | **5** | **Meja** | Méja | Table | `5.glb` | `5.jpg` | `4` |
 | **6** | **Piring** | Piring / Pinggan | Plate | `6.glb` | `6.jpg` | `5` |
 
@@ -94,12 +94,12 @@ Jika ingin mengakses via IP lokal di ponsel Android:
 *(Atau gunakan alat tunnel seperti `ngrok http 3000` / `cloudflared` untuk mendapatkan URL HTTPS instan).*
 
 ### 3. Mengatur API Key Gemini
-Masukkan API Key melalui menu antarmuka aplikasi:
-1. Klik ikon roda gigi **⚙️ (Pengaturan)** di pojok kanan atas aplikasi.
-2. Masukkan Gemini API Key Anda (dapat dibuat gratis di [Google AI Studio](https://aistudio.google.com/app/apikey)).
-3. Klik **Uji Koneksi** lalu klik **Simpan API Key** (tersimpan di `localStorage` peramban Anda).
+API Key tunggal disimpan di server, bukan di browser atau repositori:
+1. Tambahkan `GEMINI_API_KEY` sebagai environment variable di pengaturan proyek Vercel, lalu redeploy.
+2. Untuk pengembangan lokal, salin `.env.example` menjadi `.env` dan isi key Anda di file lokal tersebut.
+3. Gunakan **Uji Koneksi** pada menu Pengaturan untuk memeriksa koneksi chatbot.
 
-Jangan menyimpan API Key di variabel lingkungan untuk aplikasi ini. Key yang dipakai langsung oleh browser tidak dapat dirahasiakan dari pengunjung; setiap pengguna sebaiknya memasukkan key mereka sendiri.
+Jangan pernah mengirim, memasukkan ke Git, atau menaruh API Key di kode browser. Karena chatbot memakai satu key bersama, batasi kuota dan pantau pemakaian di Google AI Studio; permintaan pengunjung memakai kuota pemilik key.
 
 ---
 
@@ -118,7 +118,7 @@ Deploy ke Vercel sangat direkomendasikan untuk WebAR karena Vercel **otomatis me
    git push -u origin main
    ```
 3. Buka [Vercel Dashboard](https://vercel.com/new) dan klik **Import** pada repositori GitHub Anda.
-4. Build command dan direktori output sudah dikonfigurasi di `vercel.json`. Jangan tambahkan `GEMINI_API_KEY` sebagai Environment Variable.
+4. Build command dan direktori output sudah dikonfigurasi di `vercel.json`. Tambahkan `GEMINI_API_KEY` di **Project Settings → Environment Variables**, lalu redeploy untuk mengaktifkan chatbot.
 5. Selesai! WebAR Anda sudah online di alamat `https://nama-proyek.vercel.app` dan siap dipindai dari perangkat mana pun di dunia.
 
 ### Metode 2: Lewat Vercel CLI Langsung dari Terminal

@@ -75,12 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     btnDownloadTarget: document.getElementById('btn-download-target'),
     btnModalSelectItem: document.getElementById('btn-modal-select-item'),
     
-    // Settings / API Key Modal
+    // Settings / Gemini connection
     settingsModal: document.getElementById('settings-modal'),
     btnOpenSettings: document.getElementById('btn-open-settings'),
     btnCloseSettings: document.getElementById('btn-close-settings'),
-    apiKeyInput: document.getElementById('api-key-input'),
-    btnSaveApiKey: document.getElementById('btn-save-api-key'),
     btnTestApiKey: document.getElementById('btn-test-api-key'),
     apiKeyStatus: document.getElementById('api-key-status'),
     
@@ -464,11 +462,6 @@ document.addEventListener('DOMContentLoaded', () => {
       addMessageToUI('model', `Om Swastyastu! Saya asisten Pratima AR. Silakan tanya singkat seputar **${activeObjName}**, bahasa Bali, atau filosofinya! ⚡`, null);
     }
 
-    // Periksa API Key
-    if (!window.geminiChatbot.hasApiKey()) {
-      showApiKeyPromptInChat();
-    }
-
     dom.chatInput?.focus();
   }
 
@@ -520,11 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
   async function sendChatMessage() {
     const rawText = dom.chatInput.value.trim();
     if (!rawText) return;
-
-    if (!window.geminiChatbot.hasApiKey()) {
-      openSettingsModal();
-      return;
-    }
 
     // Tampilkan pesan user ke UI
     addMessageToUI('user', rawText);
@@ -600,22 +588,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function removeLoadingIndicator(id) {
     const el = document.getElementById(id);
     if (el) el.remove();
-  }
-
-  function showApiKeyPromptInChat() {
-    const promptEl = document.createElement('div');
-    promptEl.className = 'api-key-banner';
-    promptEl.innerHTML = `
-      <div class="p-3 bg-amber-500/20 border border-amber-500/40 rounded-xl my-2 text-xs text-amber-200">
-        <p class="font-bold mb-1">🔑 API Key Gemini Belum Diatur</p>
-        <p class="mb-2">Untuk mengaktifkan Chatbot AI, masukkan Gemini API Key gratis Anda.</p>
-        <button id="btn-prompt-api" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg text-xs">
-          Atur API Key Sekarang
-        </button>
-      </div>
-    `;
-    dom.chatMessages.appendChild(promptEl);
-    document.getElementById('btn-prompt-api')?.addEventListener('click', openSettingsModal);
   }
 
   // Update statistik token pada UI
@@ -732,8 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
 
   function openSettingsModal() {
-    dom.apiKeyInput.value = window.geminiChatbot.getApiKey();
-    dom.apiKeyStatus.textContent = '';
+    dom.apiKeyStatus.textContent = 'API Key dikelola secara aman di server.';
     dom.settingsModal.classList.remove('hidden');
   }
 
@@ -744,27 +715,13 @@ document.addEventListener('DOMContentLoaded', () => {
   dom.btnOpenSettings?.addEventListener('click', openSettingsModal);
   dom.btnCloseSettings?.addEventListener('click', closeSettingsModal);
 
-  dom.btnSaveApiKey?.addEventListener('click', () => {
-    const key = dom.apiKeyInput.value.trim();
-    window.geminiChatbot.setApiKey(key);
-    dom.apiKeyStatus.innerHTML = `<span class="text-emerald-400">✓ API Key berhasil disimpan!</span>`;
-    setTimeout(() => {
-      closeSettingsModal();
-    }, 1000);
-  });
-
   dom.btnTestApiKey?.addEventListener('click', async () => {
-    const key = dom.apiKeyInput.value.trim();
-    if (!key) {
-      dom.apiKeyStatus.innerHTML = `<span class="text-red-400">Silakan masukkan API Key terlebih dahulu.</span>`;
-      return;
-    }
-    dom.apiKeyStatus.innerHTML = `<span class="text-amber-300">Menguji API Key ke Google AI Studio...</span>`;
+    dom.apiKeyStatus.innerHTML = `<span class="text-amber-300">Menguji koneksi AI server...</span>`;
     dom.btnTestApiKey.disabled = true;
 
     try {
-      await window.geminiChatbot.testApiKey(key);
-      dom.apiKeyStatus.innerHTML = `<span class="text-emerald-400">✓ Koneksi Berhasil! API Key valid.</span>`;
+      await window.geminiChatbot.testApiKey();
+      dom.apiKeyStatus.innerHTML = `<span class="text-emerald-400">✓ Koneksi berhasil. Chatbot siap digunakan.</span>`;
     } catch (err) {
       dom.apiKeyStatus.innerHTML = `<span class="text-red-400">✗ Gagal: ${err.message}</span>`;
     } finally {
