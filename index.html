@@ -15,7 +15,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=camera-fix-2">
+  <link rel="stylesheet" href="css/style.css?v=camera-permission-fix-1">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
     <div class="w-48 bg-slate-800 h-1.5 rounded-full overflow-hidden">
       <div id="loading-progress" class="bg-cyan-500 h-full w-2/3 animate-pulse"></div>
     </div>
-    <span class="text-xs text-slate-500 mt-3">Mohon izinkan akses kamera pada perangkat Anda</span>
+    <span id="loading-hint" class="text-xs text-slate-400 mt-3 text-center max-w-xs px-4">Tekan tombol, lalu pilih Izinkan saat browser meminta akses kamera.</span>
     <button id="btn-skip-loading" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold rounded-lg border border-slate-700 transition">
       Aktifkan Kamera & Mulai AR ↗
     </button>
@@ -350,8 +350,8 @@
   </div>
 
   <!-- Scripts Aplikasi -->
-  <script src="js/models-data.js?v=camera-fix-2"></script>
+  <script src="js/models-data.js?v=camera-permission-fix-1"></script>
   <script src="js/gemini.js"></script>
-  <script src="js/app.js?v=camera-fix-2"></script>
+  <script src="js/app.js?v=camera-permission-fix-1"></script>
 </body>
 </html>

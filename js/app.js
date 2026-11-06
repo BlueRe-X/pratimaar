@@ -79,7 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Loading Screen
     loadingScreen: document.getElementById('loading-screen'),
     loadingProgress: document.getElementById('loading-progress'),
-    btnSkipLoading: document.getElementById('btn-skip-loading')
+    btnSkipLoading: document.getElementById('btn-skip-loading'),
+    loadingHint: document.getElementById('loading-hint')
   };
 
   /* ==========================================================================
@@ -254,6 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
 
   const sceneEl = document.querySelector('a-scene');
+  let cameraStartPending = false;
+  let cameraStartTimedOut = false;
+  let cameraStartTimeout;
 
   function dismissLoading() {
     if (dom.loadingScreen) {
@@ -263,45 +267,76 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   dom.btnSkipLoading?.addEventListener('click', () => {
-    const arSystem = sceneEl.systems['mindar-image-system'];
-    if (!arSystem) {
-      dom.statusText.textContent = 'Sistem AR belum siap. Muat ulang halaman dan coba lagi.';
+    if (cameraStartTimedOut) {
+      window.location.reload();
       return;
     }
 
+    if (cameraStartPending) return;
+
+    const arSystem = sceneEl.systems['mindar-image-system'];
+    if (!arSystem) {
+      dom.loadingHint.textContent = 'Sistem AR belum siap. Muat ulang halaman dan coba lagi.';
+      return;
+    }
+
+    cameraStartPending = true;
     dom.btnSkipLoading.disabled = true;
     dom.btnSkipLoading.textContent = 'Meminta izin kamera...';
-    arSystem.start();
+    dom.loadingHint.textContent = 'Pilih Izinkan pada dialog browser. Jika dialog tidak muncul, cek izin Kamera di pengaturan situs browser.';
+    try {
+      arSystem.start();
+    } catch (error) {
+      console.error('Kamera gagal dimulai:', error);
+      cameraStartPending = false;
+      dom.btnSkipLoading.disabled = false;
+      dom.btnSkipLoading.textContent = 'Coba Lagi';
+      dom.loadingHint.textContent = 'Kamera gagal dimulai. Periksa izin Kamera situs dan browser, lalu coba lagi.';
+      return;
+    }
 
     if (arSystem.video) {
       arSystem.video.muted = true;
       arSystem.video.playsInline = true;
       arSystem.video.addEventListener('loadedmetadata', () => {
+        clearTimeout(cameraStartTimeout);
+        cameraStartPending = false;
         arSystem.video.play().catch(error => {
           console.error('Kamera gagal diputar:', error);
-          dom.statusText.textContent = 'Video kamera diblokir browser. Izinkan kamera, lalu muat ulang halaman.';
+          dom.loadingHint.textContent = 'Kamera diizinkan, tetapi video diblokir. Muat ulang halaman dan pastikan browser boleh menggunakan kamera.';
         });
         dismissLoading();
       }, { once: true });
     }
+
+    cameraStartTimeout = setTimeout(() => {
+      if (!cameraStartPending) return;
+      cameraStartPending = false;
+      cameraStartTimedOut = true;
+      dom.btnSkipLoading.disabled = false;
+      dom.btnSkipLoading.textContent = 'Muat Ulang & Coba Lagi';
+      dom.loadingHint.textContent = 'Belum ada respons kamera. Izinkan Kamera lewat ikon pengaturan di address bar atau pengaturan situs browser, lalu tekan tombol untuk memuat ulang.';
+    }, 15000);
   });
 
   sceneEl.addEventListener('arReady', () => {
     console.log("MindAR Siap");
+    clearTimeout(cameraStartTimeout);
+    cameraStartPending = false;
     dismissLoading();
   });
 
   sceneEl.addEventListener('arError', (event) => {
     const error = event.detail?.error || 'Kesalahan kamera atau AR';
     console.error("MindAR Gagal Dimulai:", error);
-    const message = error === 'VIDEO_FAIL'
-      ? 'Kamera gagal dibuka. Izinkan akses kamera di browser dan gunakan HTTPS.'
-      : `${error}. Periksa izin kamera dan koneksi HTTPS.`;
-    dom.statusText.textContent = message;
-    dom.statusIndicator.classList.add('bg-amber-500/80', 'text-amber-200');
+    clearTimeout(cameraStartTimeout);
+    cameraStartPending = false;
+    cameraStartTimedOut = false;
+    dom.loadingHint.textContent = error === 'VIDEO_FAIL'
+      ? 'Kamera tidak dapat dibuka. Atur izin Kamera untuk situs ini ke Izinkan, tutup aplikasi lain yang memakai kamera, lalu coba lagi.'
+      : `${error}. Periksa izin kamera dan koneksi HTTPS, lalu coba lagi.`;
     dom.btnSkipLoading.disabled = false;
-    dom.btnSkipLoading.textContent = 'Kamera gagal. Muat ulang untuk mencoba lagi.';
-    dismissLoading();
+    dom.btnSkipLoading.textContent = 'Coba Lagi';
   });
 
   // Hubungkan event targetFound dan targetLost untuk masing-masing item (1..6)
