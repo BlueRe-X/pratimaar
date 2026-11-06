@@ -262,7 +262,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  dom.btnSkipLoading?.addEventListener('click', dismissLoading);
+  dom.btnSkipLoading?.addEventListener('click', () => {
+    const arSystem = sceneEl.systems['mindar-image-system'];
+    if (!arSystem) {
+      dom.statusText.textContent = 'Sistem AR belum siap. Muat ulang halaman dan coba lagi.';
+      return;
+    }
+
+    dom.btnSkipLoading.disabled = true;
+    dom.btnSkipLoading.textContent = 'Meminta izin kamera...';
+    arSystem.start();
+
+    if (arSystem.video) {
+      arSystem.video.addEventListener('loadedmetadata', dismissLoading, { once: true });
+    }
+  });
 
   sceneEl.addEventListener('arReady', () => {
     console.log("MindAR Siap");
@@ -277,6 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
       : `${error}. Periksa izin kamera dan koneksi HTTPS.`;
     dom.statusText.textContent = message;
     dom.statusIndicator.classList.add('bg-amber-500/80', 'text-amber-200');
+    dom.btnSkipLoading.disabled = false;
+    dom.btnSkipLoading.textContent = 'Kamera gagal. Muat ulang untuk mencoba lagi.';
     dismissLoading();
   });
 

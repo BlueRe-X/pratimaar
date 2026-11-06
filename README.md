@@ -10,10 +10,10 @@ Sesuai urutan folder `asset`, `target`, dan `doc`:
 
 | No | Objek (Indonesia) | Basa Bali | English | Model 3D (`asset/`) | Gambar Target (`img/`) | Indeks Target MindAR |
 |:--:|:------------------|:----------|:--------|:-------------------:|:---------------------:|:--------------------:|
-| **1** | **Buku** | Cakepan | Book | `4.glb` | `1.jpg` | `0` |
+| **1** | **Buku** | Cakepan | Book | `1.glb` | `1.jpg` | `0` |
 | **2** | **Burung** | Kedis | Bird | `2.glb` | `2.jpg` | `1` |
 | **3** | **Ikan** | Bé / Jukut | Fish | `3.glb` (Animasi) | `3.jpg` | `2` |
-| **4** | **Kucing** | Méong | Cat | `1.glb` | `4.jpg` | `3` |
+| **4** | **Kucing** | Méong | Cat | `4.glb` | `4.jpg` | `3` |
 | **5** | **Meja** | Méja | Table | `5.glb` | `5.jpg` | `4` |
 | **6** | **Piring** | Piring / Pinggan | Plate | `6.glb` | `6.jpg` | `5` |
 
@@ -94,7 +94,7 @@ Jika ingin mengakses via IP lokal di ponsel Android:
 *(Atau gunakan alat tunnel seperti `ngrok http 3000` / `cloudflared` untuk mendapatkan URL HTTPS instan).*
 
 ### 3. Mengatur API Key Gemini
-Chatbot menggunakan **Gemini 3.8 Flash**. API Key tunggal disimpan di server, bukan di browser atau repositori:
+Chatbot menggunakan **Gemini 3.8 Flash**, dengan fallback otomatis ke Gemini 3.6 Flash jika model utama sedang padat. API Key tunggal disimpan di server, bukan di browser atau repositori:
 1. Tambahkan `GEMINI_API_KEY` sebagai environment variable di pengaturan proyek Vercel, lalu redeploy.
 2. Untuk pengembangan lokal, salin `.env.example` menjadi `.env` dan isi key Anda di file lokal tersebut.
 3. Gunakan **Uji Koneksi** pada menu Pengaturan untuk memeriksa koneksi chatbot.

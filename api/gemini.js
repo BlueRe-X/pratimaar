@@ -1,5 +1,5 @@
-const MODEL_NAME = 'gemini-3.8-flash';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
+const MODEL_NAMES = ['gemini-3.8-flash', 'gemini-3.6-flash'];
+const API_URL = modelName => `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
 function jsonResponse(status, body) {
   return { status, body };
@@ -98,30 +98,45 @@ async function processRequest(req) {
   }
 
   try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey
-      },
-      body: JSON.stringify(payload)
-    });
-    const data = await response.json().catch(() => ({}));
+    for (let index = 0; index < MODEL_NAMES.length; index += 1) {
+      const response = await fetch(API_URL(MODEL_NAMES[index]), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      return jsonResponse(response.status, {
-        error: { message: data.error?.message || `Gemini API gagal (HTTP ${response.status}).` }
+      if (!response.ok) {
+        const message = data.error?.message || `Gemini API gagal (HTTP ${response.status}).`;
+        const isTemporaryOverload = [429, 503].includes(response.status) ||
+          /high demand|overload|temporarily unavailable/i.test(message);
+        if (isTemporaryOverload && index < MODEL_NAMES.length - 1) continue;
+
+        return jsonResponse(response.status, {
+          error: {
+            message: isTemporaryOverload
+              ? 'Gemini sedang padat. Kedua model sementara tidak tersedia; coba lagi sebentar.'
+              : message
+          }
+        });
+      }
+
+      if (testMode) return jsonResponse(200, { ok: true, model: MODEL_NAMES[index] });
+
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!reply) {
+        return jsonResponse(502, { error: { message: 'Gemini tidak mengembalikan jawaban.' } });
+      }
+
+      return jsonResponse(200, {
+        reply,
+        model: MODEL_NAMES[index],
+        usageMetadata: data.usageMetadata || {}
       });
     }
-
-    if (testMode) return jsonResponse(200, { ok: true });
-
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!reply) {
-      return jsonResponse(502, { error: { message: 'Gemini tidak mengembalikan jawaban.' } });
-    }
-
-    return jsonResponse(200, { reply, usageMetadata: data.usageMetadata || {} });
   } catch (error) {
     console.error('Gemini proxy request failed:', error);
     return jsonResponse(502, { error: { message: 'Tidak dapat menghubungi Gemini. Coba lagi nanti.' } });

@@ -17,7 +17,7 @@ const ITEMS_DATA = [
     latinName: "Liber",
     balineseName: "Cakepan",
     englishName: "Book",
-    modelSrc: "asset/4.glb",
+    modelSrc: "asset/1.glb",
     imageSrc: "img/1.jpg",
     icon: "📖",
     // Penyesuaian visual 3D (scale, rotation, offset)
@@ -101,7 +101,7 @@ const ITEMS_DATA = [
     latinName: "Felis catus",
     balineseName: "Méong",
     englishName: "Cat",
-    modelSrc: "asset/1.glb",
+    modelSrc: "asset/4.glb",
     imageSrc: "img/4.jpg",
     icon: "🐱",
     modelConfig: {
