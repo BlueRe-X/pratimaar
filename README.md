@@ -111,14 +111,14 @@ Deploy ke Vercel sangat direkomendasikan untuk WebAR karena Vercel **otomatis me
 1. Buat repositori baru di [GitHub](https://github.com/new).
 2. Di terminal proyek lokal, lakukan commit dan push:
    ```bash
-   git add .env.example README.md js/app.js js/gemini.js server.js api/config.js
+   git add .
    git commit -m "feat: setup PratimaAR siap deploy ke Vercel"
    git branch -M main
    git remote add origin https://github.com/USERNAME/NAMA-REPO.git
    git push -u origin main
    ```
 3. Buka [Vercel Dashboard](https://vercel.com/new) dan klik **Import** pada repositori GitHub Anda.
-4. Klik tombol **Deploy** tanpa menambahkan `GEMINI_API_KEY` sebagai Environment Variable.
+4. Build command dan direktori output sudah dikonfigurasi di `vercel.json`. Jangan tambahkan `GEMINI_API_KEY` sebagai Environment Variable.
 5. Selesai! WebAR Anda sudah online di alamat `https://nama-proyek.vercel.app` dan siap dipindai dari perangkat mana pun di dunia.
 
 ### Metode 2: Lewat Vercel CLI Langsung dari Terminal
