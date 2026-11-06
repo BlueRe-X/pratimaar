@@ -94,20 +94,12 @@ Jika ingin mengakses via IP lokal di ponsel Android:
 *(Atau gunakan alat tunnel seperti `ngrok http 3000` / `cloudflared` untuk mendapatkan URL HTTPS instan).*
 
 ### 3. Mengatur API Key Gemini
-Ada 2 cara mudah untuk mengatur Gemini API Key:
-
-**Cara 1 (Rekomendasi via `.env`):**
-1. Buka file `.env` di folder proyek.
-2. Masukkan API Key Anda:
-   ```env
-   GEMINI_API_KEY=AIzaSy...
-   ```
-3. Simpan file, lalu jalankan `npm start`. API Key akan otomatis aktif untuk seluruh pengguna tanpa perlu input manual di peramban!
-
-**Cara 2 (Via Menu Antarmuka UI):**
+Masukkan API Key melalui menu antarmuka aplikasi:
 1. Klik ikon roda gigi **⚙️ (Pengaturan)** di pojok kanan atas aplikasi.
 2. Masukkan Gemini API Key Anda (dapat dibuat gratis di [Google AI Studio](https://aistudio.google.com/app/apikey)).
 3. Klik **Uji Koneksi** lalu klik **Simpan API Key** (tersimpan di `localStorage` peramban Anda).
+
+Jangan menyimpan API Key di variabel lingkungan untuk aplikasi ini. Key yang dipakai langsung oleh browser tidak dapat dirahasiakan dari pengunjung; setiap pengguna sebaiknya memasukkan key mereka sendiri.
 
 ---
 
@@ -119,18 +111,15 @@ Deploy ke Vercel sangat direkomendasikan untuk WebAR karena Vercel **otomatis me
 1. Buat repositori baru di [GitHub](https://github.com/new).
 2. Di terminal proyek lokal, lakukan commit dan push:
    ```bash
-   git add .
+   git add .env.example README.md js/app.js js/gemini.js server.js api/config.js
    git commit -m "feat: setup PratimaAR siap deploy ke Vercel"
    git branch -M main
    git remote add origin https://github.com/USERNAME/NAMA-REPO.git
    git push -u origin main
    ```
 3. Buka [Vercel Dashboard](https://vercel.com/new) dan klik **Import** pada repositori GitHub Anda.
-4. Buka bagian **Environment Variables**, lalu tambahkan:
-   - **Key**: `GEMINI_API_KEY`
-   - **Value**: *(Kunci API Gemini Anda dari Google AI Studio)*
-5. Klik tombol **Deploy**!
-6. Selesai! WebAR Anda sudah online di alamat `https://nama-proyek.vercel.app` dan siap dipindai dari perangkat mana pun di dunia.
+4. Klik tombol **Deploy** tanpa menambahkan `GEMINI_API_KEY` sebagai Environment Variable.
+5. Selesai! WebAR Anda sudah online di alamat `https://nama-proyek.vercel.app` dan siap dipindai dari perangkat mana pun di dunia.
 
 ### Metode 2: Lewat Vercel CLI Langsung dari Terminal
 Jika ingin deploy langsung tanpa push ke GitHub:
@@ -144,7 +133,6 @@ Jika ingin deploy langsung tanpa push ke GitHub:
    ```bash
    npx vercel --prod
    ```
-5. Atur variabel lingkungan di Vercel Dashboard (`Settings` -> `Environment Variables`) dengan menambahkan `GEMINI_API_KEY`.
 
 
 ---

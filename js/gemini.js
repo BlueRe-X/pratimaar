@@ -35,25 +35,6 @@ class GeminiChatbot {
 
     // Callback untuk update UI token
     this.onTokenUpdate = null;
-
-    // Muat konfigurasi .env otomatis dari server
-    this.initServerConfig();
-  }
-
-  async initServerConfig() {
-    try {
-      const res = await fetch('/api/config');
-      if (res.ok) {
-        const config = await res.json();
-        if (config.hasEnvKey && !this.apiKey) {
-          this.apiKey = config.geminiApiKey;
-          this.isFromEnv = true;
-          console.log("✓ Gemini API Key berhasil dimuat otomatis dari .env");
-        }
-      }
-    } catch (e) {
-      // Abaikan jika dijalankan tanpa server backend
-    }
   }
 
   setApiKey(key) {

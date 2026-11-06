@@ -93,21 +93,6 @@ function handleRequest(req, res) {
   // Parse path & sanitize
   let cleanUrl = req.url.split('?')[0];
 
-  // Endpoint API untuk konfigurasi client (termasuk GEMINI_API_KEY dari .env)
-  if (cleanUrl === '/api/config') {
-    res.writeHead(200, {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-cache'
-    });
-    res.end(JSON.stringify({
-      geminiApiKey: process.env.GEMINI_API_KEY || '',
-      hasEnvKey: Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 5),
-      port: PORT,
-      nodeEnv: process.env.NODE_ENV || 'development'
-    }));
-    return;
-  }
-
   if (cleanUrl === '/' || cleanUrl === '') {
     cleanUrl = '/index.html';
   }
@@ -149,9 +134,7 @@ server.listen(PORT, HOST, () => {
   console.log('====================================================');
   console.log('✨ PratimaAR Web Server Berhasil Berjalan! ✨');
   console.log('====================================================');
-  const hasEnvKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 5);
-  console.log(`\n🔑 Konfigurasi .env:`);
-  console.log(`   Gemini API Key : ${hasEnvKey ? 'Terdeteksi (Siap digunakan) ✓' : 'Belum diisi di .env (Bisa via .env atau via menu Pengaturan UI)'}`);
+  console.log(`\n🔑 API Key Gemini diatur secara lokal melalui menu Pengaturan aplikasi.`);
   console.log(`   Port Server    : ${PORT}`);
   console.log(`   Environment    : ${process.env.NODE_ENV || 'development'}`);
 

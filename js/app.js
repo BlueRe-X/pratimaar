@@ -733,11 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openSettingsModal() {
     dom.apiKeyInput.value = window.geminiChatbot.getApiKey();
-    if (window.geminiChatbot.isFromEnv) {
-      dom.apiKeyStatus.innerHTML = `<span class="text-cyan-400">ℹ️ API Key saat ini aktif termuat dari file .env</span>`;
-    } else {
-      dom.apiKeyStatus.textContent = '';
-    }
+    dom.apiKeyStatus.textContent = '';
     dom.settingsModal.classList.remove('hidden');
   }
 
