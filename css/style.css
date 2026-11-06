@@ -42,6 +42,12 @@ body > video {
   pointer-events: none;
 }
 
+a-scene > video {
+  position: absolute !important;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
 /* ==========================================================================
    AR SCENE & CANVAS
    ========================================================================== */

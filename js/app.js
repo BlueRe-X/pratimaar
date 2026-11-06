@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (arSystem.video) {
+      sceneEl.insertBefore(arSystem.video, sceneEl.firstChild);
       arSystem.video.muted = true;
       arSystem.video.playsInline = true;
       arSystem.video.addEventListener('loadedmetadata', () => {
