@@ -49,15 +49,6 @@ a-scene {
   background: transparent !important;
 }
 
-body video {
-  position: absolute;
-  z-index: 0 !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: none;
-}
-
 a-scene canvas.a-canvas {
   position: absolute !important;
   top: 0;

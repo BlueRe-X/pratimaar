@@ -274,7 +274,15 @@ document.addEventListener('DOMContentLoaded', () => {
     arSystem.start();
 
     if (arSystem.video) {
-      arSystem.video.addEventListener('loadedmetadata', dismissLoading, { once: true });
+      arSystem.video.muted = true;
+      arSystem.video.playsInline = true;
+      arSystem.video.addEventListener('loadedmetadata', () => {
+        arSystem.video.play().catch(error => {
+          console.error('Kamera gagal diputar:', error);
+          dom.statusText.textContent = 'Video kamera diblokir browser. Izinkan kamera, lalu muat ulang halaman.';
+        });
+        dismissLoading();
+      }, { once: true });
     }
   });
 
