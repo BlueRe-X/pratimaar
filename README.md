@@ -51,6 +51,7 @@ Fitur chatbot dirancang dengan prinsip **efisiensi token maksimal pada sisi inpu
 
 - **Desain Mobile-First & Desktop Ready**: Layout *glassmorphism* modern yang menyesuaikan ukuran layar ponsel (portrait/landscape) dan PC.
 - **Scanner Reticle**: Indikator pemindaian kamera dengan animasi garis laser dan penanda sudut saat target terdeteksi.
+- **Deskripsi sesuai target**: Kartu deskripsi hanya muncul ketika gambar target yang cocok terdeteksi kamera. Urutan target dimulai dari Buku, Burung, Ikan, Kucing, Meja, lalu Piring.
 - **Kartu Informasi Trilingual**:
   - Pilihan 3 bahasa: 🇮🇩 **Bahasa Indonesia**, 🇬🇧 **English**, dan 🌺 **Basa Bali** (diambil langsung dari `doc/deskripsi.docx`).
   - Fitur **Audio Text-to-Speech (TTS)**: Mendengarkan pelafalan deskripsi secara otomatis.
@@ -61,7 +62,6 @@ Fitur chatbot dirancang dengan prinsip **efisiensi token maksimal pada sisi inpu
 - **Katalog & Viewer Target Bawaan (📸 Target)**:
   - Melihat semua 6 gambar target.
   - Dapat dibuka di layar monitor lain atau ponsel kedua untuk langsung dipindai tanpa perlu dicetak di atas kertas.
-  - Tombol **"Uji 3D" (Simulasi Deteksi)**: Menguji model dan AI langsung tanpa membutuhkan kamera fisik.
 
 ---
 
@@ -94,7 +94,7 @@ Jika ingin mengakses via IP lokal di ponsel Android:
 *(Atau gunakan alat tunnel seperti `ngrok http 3000` / `cloudflared` untuk mendapatkan URL HTTPS instan).*
 
 ### 3. Mengatur API Key Gemini
-API Key tunggal disimpan di server, bukan di browser atau repositori:
+Chatbot menggunakan **Gemini 3.8 Flash**. API Key tunggal disimpan di server, bukan di browser atau repositori:
 1. Tambahkan `GEMINI_API_KEY` sebagai environment variable di pengaturan proyek Vercel, lalu redeploy.
 2. Untuk pengembangan lokal, salin `.env.example` menjadi `.env` dan isi key Anda di file lokal tersebut.
 3. Gunakan **Uji Koneksi** pada menu Pengaturan untuk memeriksa koneksi chatbot.

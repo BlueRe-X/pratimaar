@@ -34,8 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btnTts: document.getElementById('btn-tts'),
     btnAskAi: document.getElementById('btn-ask-ai'),
     modelNavPills: document.getElementById('model-nav-pills'),
-    btnPrevModel: document.getElementById('btn-prev-model'),
-    btnNextModel: document.getElementById('btn-next-model'),
     modelCounterBadge: document.getElementById('model-counter-badge'),
     
     // 3D Controls
@@ -69,11 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCloseImageModal: document.getElementById('btn-close-image-modal'),
     modalTargetImg: document.getElementById('modal-target-img'),
     modalTargetTitle: document.getElementById('modal-target-title'),
-    modalDescId: document.getElementById('modal-desc-id'),
-    modalDescEn: document.getElementById('modal-desc-en'),
-    modalDescBali: document.getElementById('modal-desc-bali'),
     btnDownloadTarget: document.getElementById('btn-download-target'),
-    btnModalSelectItem: document.getElementById('btn-modal-select-item'),
     
     // Settings / Gemini connection
     settingsModal: document.getElementById('settings-modal'),
@@ -276,8 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   sceneEl.addEventListener('arError', (event) => {
-    console.error("MindAR Gagal Dimulai:", event);
-    alert("Kamera tidak dapat diakses atau terjadi kesalahan AR. Anda tetap dapat menggunakan mode pratinjau 3D & membaca deskripsi!");
+    const error = event.detail?.error || 'Kesalahan kamera atau AR';
+    console.error("MindAR Gagal Dimulai:", error);
+    const message = error === 'VIDEO_FAIL'
+      ? 'Kamera gagal dibuka. Izinkan akses kamera di browser dan gunakan HTTPS.'
+      : `${error}. Periksa izin kamera dan koneksi HTTPS.`;
+    dom.statusText.textContent = message;
+    dom.statusIndicator.classList.add('bg-amber-500/80', 'text-amber-200');
     dismissLoading();
   });
 
@@ -299,8 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`Target ${item.id} (${item.name}) Hilang.`);
       state.trackedTargets.delete(item.id);
       
-      if (state.trackedTargets.size === 0) {
-        updateTrackingStatus(false);
+      if (state.activeItem?.id === item.id) {
+        const nextTrackedItem = ITEMS_DATA.find(trackedItem => state.trackedTargets.has(trackedItem.id));
+        if (nextTrackedItem) {
+          setActiveItem(nextTrackedItem);
+        } else {
+          clearActiveItem();
+        }
       }
     });
   });
@@ -313,18 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!dom.modelNavPills) return;
     dom.modelNavPills.innerHTML = '';
     ITEMS_DATA.forEach(item => {
-      const pill = document.createElement('button');
+      const pill = document.createElement('span');
       pill.className = `model-nav-pill ${state.activeItem?.id === item.id ? 'active' : ''}`;
       pill.dataset.id = item.id;
       pill.innerHTML = `<span>${item.icon}</span> <span>#${item.id} ${item.name}</span>`;
-      pill.addEventListener('click', () => {
-        setActiveItem(item);
-      });
       dom.modelNavPills.appendChild(pill);
     });
   }
 
   function setActiveItem(item) {
+    if (!state.trackedTargets.has(item.id)) return;
     state.activeItem = item;
     window.geminiChatbot.setActiveItem(item);
 
@@ -358,18 +360,15 @@ document.addEventListener('DOMContentLoaded', () => {
     renderQuickChips(item);
   }
 
-  // Tombol navigasi Prev & Next
-  dom.btnPrevModel?.addEventListener('click', () => {
-    if (!state.activeItem) return;
-    const prevIdx = (state.activeItem.id - 2 + ITEMS_DATA.length) % ITEMS_DATA.length;
-    setActiveItem(ITEMS_DATA[prevIdx]);
-  });
-
-  dom.btnNextModel?.addEventListener('click', () => {
-    if (!state.activeItem) return;
-    const nextIdx = state.activeItem.id % ITEMS_DATA.length;
-    setActiveItem(ITEMS_DATA[nextIdx]);
-  });
+  function clearActiveItem() {
+    state.activeItem = null;
+    window.geminiChatbot.setActiveItem(null);
+    dom.infoCard.classList.add('translate-y-full', 'opacity-0');
+    dom.chatActiveObject.textContent = 'Belum ada target terdeteksi';
+    dom.quickChipsContainer.innerHTML = '';
+    document.querySelectorAll('.model-nav-pill').forEach(pill => pill.classList.remove('active'));
+    updateTrackingStatus(false);
+  }
 
   function updateTrackingStatus(isFound, item = null) {
     if (isFound && item) {
@@ -631,12 +630,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="text-base">${item.icon}</span>
           </h4>
           <p class="text-xs text-amber-300 font-medium">${item.balineseName} (${item.englishName})</p>
-          <div class="mt-2 flex gap-1.5">
+          <div class="mt-2 flex">
             <button class="btn-view-target flex-1 py-1 px-2 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 rounded font-medium" data-id="${item.id}">
               🔍 Lihat Target
-            </button>
-            <button class="btn-preview-3d py-1 px-2 text-xs bg-cyan-600 hover:bg-cyan-500 text-white rounded font-medium" data-id="${item.id}" title="Simulasi deteksi 3D">
-              👁️ Uji 3D
             </button>
           </div>
         </div>
@@ -645,12 +641,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Event Lihat Gambar Target
       card.querySelector('.btn-view-target').addEventListener('click', () => {
         openTargetImageModal(item);
-      });
-
-      // Event Simulasi 3D
-      card.querySelector('.btn-preview-3d').addEventListener('click', () => {
-        closeGalleryModal();
-        setActiveItem(item);
       });
 
       dom.galleryGrid.appendChild(card);
@@ -675,22 +665,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.modalTargetImg.src = item.imageSrc;
     dom.modalTargetTitle.textContent = `#${item.id} Target: ${item.name} (${item.balineseName})`;
     
-    // Tampilkan deskripsi 3 bahasa secara lengkap
-    if (dom.modalDescId) dom.modalDescId.textContent = item.descriptions.id;
-    if (dom.modalDescEn) dom.modalDescEn.textContent = item.descriptions.en;
-    if (dom.modalDescBali) dom.modalDescBali.textContent = item.descriptions.bali;
-
     dom.btnDownloadTarget.href = item.imageSrc;
     dom.btnDownloadTarget.download = `target-${item.id}-${item.name.toLowerCase()}.jpg`;
-
-    // Aksi tombol "Tampilkan Objek Ini"
-    if (dom.btnModalSelectItem) {
-      dom.btnModalSelectItem.onclick = () => {
-        dom.imageModal.classList.add('hidden');
-        closeGalleryModal();
-        setActiveItem(item);
-      };
-    }
 
     dom.imageModal.classList.remove('hidden');
   }
@@ -747,7 +723,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render pill navigasi objek (1 s/d 6)
   renderModelNavPills();
 
-  // Pilih item pertama sebagai default saat pertama kali dimuat
-  setActiveItem(ITEMS_DATA[0]);
-  updateTrackingStatus(false);
+  clearActiveItem();
 });

@@ -31,7 +31,7 @@
     </div>
     <span class="text-xs text-slate-500 mt-3">Mohon izinkan akses kamera pada perangkat Anda</span>
     <button id="btn-skip-loading" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold rounded-lg border border-slate-700 transition">
-      Buka Mode Pratinjau 3D & Deskripsi ↗
+      Lanjutkan ke Pemindaian AR ↗
     </button>
   </div>
 
@@ -169,20 +169,18 @@
         <!-- Diisi dinamis oleh JS -->
       </div>
 
-      <div id="info-card" class="info-card">
+      <div id="info-card" class="info-card translate-y-full opacity-0">
         <div class="card-header">
           <div class="card-title-group">
-            <span id="card-icon" class="card-icon">🐱</span>
+            <span id="card-icon" class="card-icon">📖</span>
             <div>
               <div class="flex items-center gap-2">
                 <h2 id="card-title" class="card-title">1. Buku (Cakepan)</h2>
                 <div class="model-nav-arrows">
-                  <button id="btn-prev-model" class="nav-arrow-btn" title="Model Sebelumnya">◀</button>
                   <span id="model-counter-badge" class="counter-badge">1/6</span>
-                  <button id="btn-next-model" class="nav-arrow-btn" title="Model Berikutnya">▶</button>
                 </div>
               </div>
-              <p id="card-sub" class="card-sub">Felis catus · Cat</p>
+              <p id="card-sub" class="card-sub">Liber · Book</p>
             </div>
           </div>
           <div class="card-actions">
@@ -206,7 +204,7 @@
 
         <!-- Description Content -->
         <p id="card-desc" class="card-desc">
-          Kucing adalah hewan mamalia karnivora kecil berkaki empat yang sering dipelihara sebagai teman manusia.
+          Arahkan kamera ke salah satu target. Deskripsi akan muncul setelah target terdeteksi.
         </p>
       </div>
     </div>
@@ -225,7 +223,7 @@
             <h3 class="chat-title">Pratima AI</h3>
             <span id="token-stats-badge" class="token-badge" title="Mode hemat token aktif">⚡ Hemat Token</span>
           </div>
-          <span class="text-[10px] text-slate-400">Powered by Google Gemini 1.5 Flash</span>
+          <span class="text-[10px] text-slate-400">Powered by Google Gemini 3.8 Flash</span>
         </div>
       </div>
       <div class="chat-header-actions">
@@ -302,29 +300,10 @@
           <img id="modal-target-img" src="" alt="Target MindAR" class="max-h-64 object-contain rounded-lg">
         </div>
 
-        <!-- Box Deskripsi Terintegrasi -->
-        <div class="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl p-3 mb-3 text-xs space-y-2">
-          <div>
-            <span class="text-cyan-400 font-bold block mb-0.5">🇮🇩 Bahasa Indonesia:</span>
-            <p id="modal-desc-id" class="text-slate-200 leading-relaxed"></p>
-          </div>
-          <div>
-            <span class="text-amber-400 font-bold block mb-0.5">🇬🇧 English:</span>
-            <p id="modal-desc-en" class="text-slate-300 leading-relaxed"></p>
-          </div>
-          <div>
-            <span class="text-emerald-400 font-bold block mb-0.5">🌺 Basa Bali:</span>
-            <p id="modal-desc-bali" class="text-slate-200 leading-relaxed"></p>
-          </div>
-        </div>
-
-        <div class="flex gap-2 w-full">
+        <div class="flex w-full">
           <a id="btn-download-target" href="#" download="target.jpg" class="flex-1 text-center py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold border border-slate-600 transition">
             📥 Unduh Target
           </a>
-          <button id="btn-modal-select-item" class="flex-1 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition">
-            👁️ Tampilkan Objek Ini
-          </button>
         </div>
       </div>
     </div>

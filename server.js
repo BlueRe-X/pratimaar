@@ -180,7 +180,7 @@ server.listen(PORT, HOST, () => {
   console.log('====================================================');
   console.log('✨ PratimaAR Web Server Berhasil Berjalan! ✨');
   console.log('====================================================');
-  console.log(`\n🔑 API Key Gemini diatur secara lokal melalui menu Pengaturan aplikasi.`);
+  console.log(`\n🔑 Gemini API Key dimuat dari environment variable GEMINI_API_KEY.`);
   console.log(`   Port Server    : ${PORT}`);
   console.log(`   Environment    : ${process.env.NODE_ENV || 'development'}`);
 

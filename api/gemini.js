@@ -1,4 +1,4 @@
-const MODEL_NAME = 'gemini-2.5-flash';
+const MODEL_NAME = 'gemini-3.8-flash';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
 
 function jsonResponse(status, body) {
@@ -85,9 +85,7 @@ async function processRequest(req) {
   const payload = {
     contents,
     generationConfig: {
-      maxOutputTokens: testMode ? 10 : 100,
-      temperature: 0.4,
-      topP: 0.8
+      maxOutputTokens: testMode ? 10 : 100
     }
   };
 
