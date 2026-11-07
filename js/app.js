@@ -494,13 +494,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderModelNavPills() {
     if (!dom.modelNavPills) return;
     dom.modelNavPills.innerHTML = '';
-    ITEMS_DATA.forEach(item => {
-      const pill = document.createElement('span');
-      pill.className = `model-nav-pill ${state.activeItem?.id === item.id ? 'active' : ''}`;
-      pill.dataset.id = item.id;
-      pill.innerHTML = `<span>${item.icon}</span> <span>#${item.id} ${item.name}</span>`;
-      dom.modelNavPills.appendChild(pill);
-    });
   }
 
   function setActiveItem(item) {
@@ -513,7 +506,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Update Info Card
     dom.cardIcon.textContent = item.icon;
-    dom.cardTitle.textContent = `${item.id}. ${item.name} (${item.balineseName})`;
+    dom.cardTitle.textContent = `${item.name} (${item.balineseName})`;
     dom.cardSub.textContent = `${item.latinName} · ${item.englishName}`;
     if (dom.modelCounterBadge) {
       dom.modelCounterBadge.textContent = `${item.id}/6`;
@@ -799,7 +792,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="relative overflow-hidden rounded-t-xl aspect-square bg-slate-800">
           <img src="${item.imageSrc}" alt="${item.name}" class="w-full h-full object-cover">
           <span class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-            #${item.id}
+            ${item.id}
           </span>
         </div>
         <div class="p-3">
@@ -841,7 +834,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function openTargetImageModal(item) {
     dom.modalTargetImg.src = item.imageSrc;
-    dom.modalTargetTitle.textContent = `#${item.id} Target: ${item.name} (${item.balineseName})`;
+    dom.modalTargetTitle.textContent = `Target: ${item.name} (${item.balineseName})`;
     
     dom.btnDownloadTarget.href = item.imageSrc;
     dom.btnDownloadTarget.download = `target-${item.id}-${item.name.toLowerCase()}.jpg`;

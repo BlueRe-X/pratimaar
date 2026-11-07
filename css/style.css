@@ -329,18 +329,9 @@ canvas.a-canvas {
   margin: 0 auto;
 }
 
-/* Quick Model Pills Selector */
+/* Quick Model Pills Selector - Disembunyikan agar tampilan kamera bersih */
 .model-nav-pills {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding-bottom: 8px;
-  scrollbar-width: none;
-}
-
-.model-nav-pills::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 .model-nav-pill {

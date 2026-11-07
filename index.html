@@ -14,7 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=camera-fullscreen-fix-4">
+  <link rel="stylesheet" href="css/style.css?v=target-update-5">
 </head>
 <body>
 
@@ -39,7 +39,7 @@
        ======================================================================== -->
   <template id="ar-scene-template">
   <a-scene
-    mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/target/targets.mind; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
+    mindar-image="imageTargetSrc: target/targets.mind; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
     color-space="sRGB"
     renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true;"
     vr-mode-ui="enabled: false"
@@ -48,12 +48,12 @@
 
     <!-- Asset Manager dengan Cache -->
     <a-assets timeout="10000">
-      <a-asset-item id="model-1" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/1.glb"></a-asset-item>
-      <a-asset-item id="model-2" src="https://raw.githubusercontent.com/BlueRe-X/pratimaar/967363e8b4f2430a8687a585c15a2b415688a4fe/asset/2.glb"></a-asset-item>
-      <a-asset-item id="model-3" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/3.glb"></a-asset-item>
-      <a-asset-item id="model-4" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/4.glb"></a-asset-item>
-      <a-asset-item id="model-5" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/5.glb"></a-asset-item>
-      <a-asset-item id="model-6" src="https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/asset/6.glb"></a-asset-item>
+      <a-asset-item id="model-1" src="asset/1.glb"></a-asset-item>
+      <a-asset-item id="model-2" src="asset/2.glb"></a-asset-item>
+      <a-asset-item id="model-3" src="asset/3.glb"></a-asset-item>
+      <a-asset-item id="model-4" src="asset/4.glb"></a-asset-item>
+      <a-asset-item id="model-5" src="asset/5.glb"></a-asset-item>
+      <a-asset-item id="model-6" src="asset/6.glb"></a-asset-item>
     </a-assets>
 
     <!-- Kamera AR -->
@@ -165,9 +165,9 @@
 
     <!-- Floating Info Card (Bottom) -->
     <div class="info-card-container">
-      <!-- Quick Selector Pills (1 s/d 6) -->
-      <div id="model-nav-pills" class="model-nav-pills">
-        <!-- Diisi dinamis oleh JS -->
+      <!-- Quick Selector Pills (Hidden) -->
+      <div id="model-nav-pills" class="model-nav-pills hidden">
+        <!-- Disembunyikan agar tampilan kamera bersih -->
       </div>
 
       <div id="info-card" class="info-card translate-y-full opacity-0">
@@ -176,7 +176,7 @@
             <span id="card-icon" class="card-icon">📖</span>
             <div>
               <div class="flex items-center gap-2">
-                <h2 id="card-title" class="card-title">1. Buku (Cakepan)</h2>
+                <h2 id="card-title" class="card-title">Buku (Cakepan)</h2>
                 <div class="model-nav-arrows">
                   <span id="model-counter-badge" class="counter-badge">1/6</span>
                 </div>
@@ -351,8 +351,8 @@
   </div>
 
   <!-- Scripts Aplikasi -->
-  <script src="js/models-data.js?v=camera-fullscreen-fix-4"></script>
+  <script src="js/models-data.js?v=target-update-5"></script>
   <script src="js/gemini.js"></script>
-  <script src="js/app.js?v=camera-fullscreen-fix-4"></script>
+  <script src="js/app.js?v=target-update-5"></script>
 </body>
 </html>

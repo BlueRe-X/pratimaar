@@ -9,9 +9,8 @@
  * 6. Piring
  */
 
-const ASSET_BASE_URL = "https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e";
-const assetUrl = path => `${ASSET_BASE_URL}/${path}`;
-const LARGE_MODEL_URL = "https://raw.githubusercontent.com/BlueRe-X/pratimaar/967363e8b4f2430a8687a585c15a2b415688a4fe/asset/2.glb";
+const assetUrl = path => path;
+const LARGE_MODEL_URL = "asset/2.glb";
 
 const ITEMS_DATA = [
   {
