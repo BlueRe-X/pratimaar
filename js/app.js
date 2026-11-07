@@ -97,28 +97,72 @@ document.addEventListener('DOMContentLoaded', async () => {
     init: function () {
       this.el.addEventListener('model-loaded', () => {
         const mesh = this.el.getObject3D('mesh');
-        if (!mesh) return;
+        if (!mesh) {
+          console.warn('auto-fit-model: mesh kosong setelah model-loaded');
+          return;
+        }
+
+        // Pastikan world matrix sudah dihitung sebelum bounding box
+        mesh.updateMatrixWorld(true);
+
+        // Set semua material ke double-sided agar tidak invisible dari satu sisi
+        mesh.traverse((node) => {
+          if (node.isMesh && node.material) {
+            node.material.side = THREE.DoubleSide;
+            node.material.needsUpdate = true;
+          }
+        });
 
         // Hitung bounding box model
         const bbox = new THREE.Box3().setFromObject(mesh);
-        const size = bbox.getSize(new THREE.Vector3());
-        const center = bbox.getCenter(new THREE.Vector3());
 
-        // Hitung dimensi terbesar
-        const maxDim = Math.max(size.x, size.y, size.z);
-        if (maxDim > 0) {
-          const scaleFactor = this.data.targetSize / maxDim;
-          mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-          // Posisikan ke tengah target
-          mesh.position.x = -center.x * scaleFactor;
-          mesh.position.y = (-center.y * scaleFactor) + this.data.offsetY;
-          mesh.position.z = -center.z * scaleFactor;
+        // Safety: jika bbox kosong (model belum siap), coba lagi setelah delay
+        if (bbox.isEmpty()) {
+          console.warn('auto-fit-model: bbox kosong, retry dalam 500ms...');
+          setTimeout(() => {
+            mesh.updateMatrixWorld(true);
+            const retryBbox = new THREE.Box3().setFromObject(mesh);
+            if (!retryBbox.isEmpty()) {
+              this._applyFit(mesh, retryBbox);
+            } else {
+              console.error('auto-fit-model: bbox masih kosong setelah retry');
+            }
+          }, 500);
+          return;
         }
 
-        // Simpan transformasi default untuk fitur Reset
-        this.el.dataset.defaultScale = `${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}`;
-        this.el.dataset.defaultRotY = mesh.rotation.y;
+        this._applyFit(mesh, bbox);
+      });
+
+      this.el.addEventListener('model-error', (e) => {
+        console.error('GLTF Model Error:', this.el.getAttribute('src'), e.detail);
+      });
+    },
+
+    _applyFit: function (mesh, bbox) {
+      const size = bbox.getSize(new THREE.Vector3());
+      const center = bbox.getCenter(new THREE.Vector3());
+
+      // Hitung dimensi terbesar
+      const maxDim = Math.max(size.x, size.y, size.z);
+      if (maxDim > 0) {
+        const scaleFactor = this.data.targetSize / maxDim;
+        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+        // Posisikan ke tengah target
+        mesh.position.x = -center.x * scaleFactor;
+        mesh.position.y = (-center.y * scaleFactor) + this.data.offsetY;
+        mesh.position.z = -center.z * scaleFactor;
+      }
+
+      // Simpan transformasi default untuk fitur Reset
+      this.el.dataset.defaultScale = `${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}`;
+      this.el.dataset.defaultRotY = mesh.rotation.y;
+
+      console.log('auto-fit-model: berhasil fit model', {
+        size: size.toArray().map(v => v.toFixed(2)),
+        maxDim: maxDim.toFixed(2),
+        scaleFactor: maxDim > 0 ? (this.data.targetSize / maxDim).toFixed(4) : 'N/A'
       });
     }
   });

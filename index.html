@@ -14,7 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=target-update-5">
+  <link rel="stylesheet" href="css/style.css?v=fix7">
 </head>
 <body>
 
@@ -39,7 +39,7 @@
        ======================================================================== -->
   <template id="ar-scene-template">
   <a-scene
-    mindar-image="imageTargetSrc: target/targets.mind; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
+    mindar-image="imageTargetSrc: target/targets.mind?v=fix7; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
     color-space="sRGB"
     renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true;"
     vr-mode-ui="enabled: false"
@@ -47,13 +47,13 @@
     model-gesture-control>
 
     <!-- Asset Manager dengan Cache -->
-    <a-assets timeout="10000">
-      <a-asset-item id="model-1" src="asset/1.glb"></a-asset-item>
-      <a-asset-item id="model-2" src="asset/2.glb"></a-asset-item>
-      <a-asset-item id="model-3" src="asset/3.glb"></a-asset-item>
-      <a-asset-item id="model-4" src="asset/4.glb"></a-asset-item>
-      <a-asset-item id="model-5" src="asset/5.glb"></a-asset-item>
-      <a-asset-item id="model-6" src="asset/6.glb"></a-asset-item>
+    <a-assets timeout="15000">
+      <a-asset-item id="model-1" src="asset/1.glb?v=fix7" response-type="arraybuffer"></a-asset-item>
+      <a-asset-item id="model-2" src="asset/2.glb?v=fix7" response-type="arraybuffer"></a-asset-item>
+      <a-asset-item id="model-3" src="asset/3.glb?v=fix7" response-type="arraybuffer"></a-asset-item>
+      <a-asset-item id="model-4" src="asset/4.glb?v=fix7" response-type="arraybuffer"></a-asset-item>
+      <a-asset-item id="model-5" src="asset/5.glb?v=fix7" response-type="arraybuffer"></a-asset-item>
+      <a-asset-item id="model-6" src="asset/6.glb?v=fix7" response-type="arraybuffer"></a-asset-item>
     </a-assets>
 
     <!-- Kamera AR -->
@@ -351,8 +351,8 @@
   </div>
 
   <!-- Scripts Aplikasi -->
-  <script src="js/models-data.js?v=target-update-5"></script>
-  <script src="js/gemini.js"></script>
-  <script src="js/app.js?v=target-update-5"></script>
+  <script src="js/models-data.js?v=fix7"></script>
+  <script src="js/gemini.js?v=fix7"></script>
+  <script src="js/app.js?v=fix7"></script>
 </body>
 </html>
