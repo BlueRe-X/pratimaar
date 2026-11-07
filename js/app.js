@@ -280,12 +280,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     video.style.display = 'block';
     video.style.visibility = 'visible';
     video.style.opacity = '1';
+    video.style.position = 'fixed';
+    video.style.top = '0px';
+    video.style.left = '0px';
+    video.style.width = '100vw';
+    video.style.height = '100vh';
+    video.style.minWidth = '100%';
+    video.style.minHeight = '100%';
+    video.style.objectFit = 'cover';
+    video.style.zIndex = '0';
     if (video.paused) {
       video.play().catch(error => {
         console.warn('Video play retry needed:', error);
       });
     }
   }
+
+  window.addEventListener('resize', () => {
+    configureSceneTransparency(sceneEl);
+    const video = sceneEl?.systems?.['mindar-image-system']?.video || document.querySelector('video');
+    if (video) {
+      ensureVideoPlaying(video);
+    }
+    if (sceneEl && typeof sceneEl.resize === 'function') {
+      sceneEl.resize();
+    }
+  });
 
   try {
     await import('https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js');
