@@ -255,6 +255,38 @@ document.addEventListener('DOMContentLoaded', async () => {
      ========================================================================== */
 
   let sceneEl = null;
+
+  function configureSceneTransparency(scene) {
+    if (!scene) return;
+    if (scene.renderer) {
+      scene.renderer.setClearColor(0x000000, 0);
+    }
+    if (scene.object3D) {
+      scene.object3D.background = null;
+    }
+    const canvas = scene.querySelector('canvas.a-canvas') || scene.canvas;
+    if (canvas) {
+      canvas.style.backgroundColor = 'transparent';
+    }
+  }
+
+  function ensureVideoPlaying(video) {
+    if (!video) return;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('autoplay', '');
+    video.style.display = 'block';
+    video.style.visibility = 'visible';
+    video.style.opacity = '1';
+    if (video.paused) {
+      video.play().catch(error => {
+        console.warn('Video play retry needed:', error);
+      });
+    }
+  }
+
   try {
     await import('https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js');
 
@@ -265,6 +297,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     sceneEl = sceneTemplate.content.firstElementChild.cloneNode(true);
     document.body.insertBefore(sceneEl, document.querySelector('.ui-overlay'));
+
+    sceneEl.addEventListener('renderstart', () => configureSceneTransparency(sceneEl));
+    sceneEl.addEventListener('loaded', () => configureSceneTransparency(sceneEl));
+
     await new Promise((resolve, reject) => {
       const deadline = performance.now() + 15000;
       const checkMindARReady = () => {
@@ -278,6 +314,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
       checkMindARReady();
     });
+
+    configureSceneTransparency(sceneEl);
 
     dom.loadingHint.textContent = 'Modul AR siap. Tekan tombol, lalu pilih Izinkan saat browser meminta akses kamera.';
     dom.btnSkipLoading.disabled = false;
@@ -300,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  dom.btnSkipLoading?.addEventListener('click', () => {
+  dom.btnSkipLoading?.addEventListener('click', async () => {
     if (!sceneEl) return;
 
     if (cameraStartTimedOut) {
@@ -320,9 +358,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     dom.btnSkipLoading.disabled = true;
     dom.btnSkipLoading.textContent = 'Meminta izin kamera...';
     dom.loadingHint.textContent = 'Pilih Izinkan pada dialog browser. Jika dialog tidak muncul, cek izin Kamera di pengaturan situs browser.';
+
+    // Polling video element saat MindAR menyuntikkannya ke DOM
+    const videoWatcher = setInterval(() => {
+      const video = arSystem.video || document.querySelector('video');
+      if (video) {
+        ensureVideoPlaying(video);
+      }
+    }, 100);
+
+    cameraStartTimeout = setTimeout(() => {
+      if (!cameraStartPending) return;
+      clearInterval(videoWatcher);
+      cameraStartPending = false;
+      cameraStartTimedOut = true;
+      dom.btnSkipLoading.disabled = false;
+      dom.btnSkipLoading.textContent = 'Muat Ulang & Coba Lagi';
+      dom.loadingHint.textContent = 'Belum ada respons kamera. Izinkan Kamera lewat ikon pengaturan di address bar atau pengaturan situs browser, lalu tekan tombol untuk memuat ulang.';
+    }, 15000);
+
     try {
-      arSystem.start();
+      await arSystem.start();
     } catch (error) {
+      clearInterval(videoWatcher);
+      clearTimeout(cameraStartTimeout);
       console.error('Kamera gagal dimulai:', error);
       cameraStartPending = false;
       dom.btnSkipLoading.disabled = false;
@@ -331,35 +390,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    if (arSystem.video) {
-      sceneEl.insertBefore(arSystem.video, sceneEl.firstChild);
-      arSystem.video.muted = true;
-      arSystem.video.playsInline = true;
-      arSystem.video.addEventListener('loadedmetadata', () => {
+    clearInterval(videoWatcher);
+    configureSceneTransparency(sceneEl);
+
+    const video = arSystem.video || document.querySelector('video');
+    if (video) {
+      ensureVideoPlaying(video);
+      if (video.readyState >= 1) {
         clearTimeout(cameraStartTimeout);
         cameraStartPending = false;
-        arSystem.video.play().catch(error => {
-          console.error('Kamera gagal diputar:', error);
-          dom.loadingHint.textContent = 'Kamera diizinkan, tetapi video diblokir. Muat ulang halaman dan pastikan browser boleh menggunakan kamera.';
-        });
         dismissLoading();
-      }, { once: true });
+      } else {
+        video.addEventListener('loadeddata', () => {
+          clearTimeout(cameraStartTimeout);
+          cameraStartPending = false;
+          ensureVideoPlaying(video);
+          configureSceneTransparency(sceneEl);
+          dismissLoading();
+        }, { once: true });
+      }
     }
-
-    cameraStartTimeout = setTimeout(() => {
-      if (!cameraStartPending) return;
-      cameraStartPending = false;
-      cameraStartTimedOut = true;
-      dom.btnSkipLoading.disabled = false;
-      dom.btnSkipLoading.textContent = 'Muat Ulang & Coba Lagi';
-      dom.loadingHint.textContent = 'Belum ada respons kamera. Izinkan Kamera lewat ikon pengaturan di address bar atau pengaturan situs browser, lalu tekan tombol untuk memuat ulang.';
-    }, 15000);
   });
 
   sceneEl?.addEventListener('arReady', () => {
     console.log("MindAR Siap");
     clearTimeout(cameraStartTimeout);
     cameraStartPending = false;
+    configureSceneTransparency(sceneEl);
+    const arSystem = sceneEl?.systems['mindar-image-system'];
+    const video = arSystem?.video || document.querySelector('video');
+    if (video) {
+      ensureVideoPlaying(video);
+    }
     dismissLoading();
   });
 

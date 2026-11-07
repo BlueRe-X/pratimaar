@@ -14,7 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=camera-scene-layer-1">
+  <link rel="stylesheet" href="css/style.css?v=camera-feed-fix-3">
 </head>
 <body>
 
@@ -41,9 +41,10 @@
   <a-scene
     mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/BlueRe-X/pratimaar@967363e/target/targets.mind; autoStart: false; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 4; uiLoading: no; uiScanning: no;"
     color-space="sRGB"
-    renderer="alpha: true, colorManagement: true, physicallyCorrectLights: true"
+    renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true;"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
+    embedded
     model-gesture-control>
 
     <!-- Asset Manager dengan Cache -->
@@ -351,8 +352,8 @@
   </div>
 
   <!-- Scripts Aplikasi -->
-  <script src="js/models-data.js?v=camera-scene-layer-1"></script>
+  <script src="js/models-data.js?v=camera-feed-fix-3"></script>
   <script src="js/gemini.js"></script>
-  <script src="js/app.js?v=camera-scene-layer-1"></script>
+  <script src="js/app.js?v=camera-feed-fix-3"></script>
 </body>
 </html>

@@ -26,25 +26,32 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-body, html {
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000;
+}
+
+body {
   width: 100%;
   height: 100%;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #000;
+  background-color: transparent !important;
   color: var(--text-main);
   user-select: none;
 }
 
-body > video {
-  position: absolute !important;
-  z-index: 0 !important;
-  pointer-events: none;
-}
-
+/* Kamera WebAR (Video feed dari MindAR) */
+video,
+body > video,
 a-scene > video {
-  position: absolute !important;
+  position: absolute;
   z-index: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   pointer-events: none;
 }
 
@@ -59,14 +66,19 @@ a-scene {
   left: 0;
   z-index: 1;
   background: transparent !important;
+  background-color: transparent !important;
 }
 
-a-scene canvas.a-canvas {
+a-scene canvas.a-canvas,
+canvas.a-canvas {
   position: absolute !important;
   top: 0;
   left: 0;
+  width: 100% !important;
+  height: 100% !important;
   z-index: 1 !important;
   background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ==========================================================================
